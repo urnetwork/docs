@@ -105,9 +105,15 @@ The number of parallel connections per source is limited. Additionally the numbe
 
 ### Contract limits
 
+**Contract priority**
+
+Contracts are assigned a priority by the platform. The contract priority for a client is determined by its contribution to the network. Providing and being a premium user are considered contributions to the network. Providers may dynamically rate limit connections based on contract priority.
+
+To make the network more resilient to bots, contract priority is weighted towards premium users and providing premium traffic. In other words, the spend per GiB is the core unit used to confer priority to providers. In this way priority is correlated with money flow and is harder to influence without spending money.
+
 **Minimum contract close**
 
-It costs some minimum amount to send any data, no matter how small. The goal is to have a small minimum to not penalize normal users, but make it economically costly to avoid the rate limits by using many accounts.
+Minimum contract close has been deprecated in favor of contract priority. This lets us better support free users.
 
 
 ### Changing the rules
