@@ -17,6 +17,7 @@ Our current model factors in three components:
 
 Note that with subsidized transfer, paid transfer trends to zero. We keep it in the model since that was the operation of the network from public beta launch in H1 2024 to “v0” launch in H2 2024.
 
+
 ## Payments to the community
 
 We set our subsidy payment as 10% of premium revenue with a guaranteed minimum amount of $.1 per MAU. MAU does not include automation and bots. The payout amount per device is determined by the amount of data routed, weighted 75% against all global devices and 25% against devices in the same country, where all countries are weighted equally. The guaranteed minimum amount will adjust every year after launch. [^1]
@@ -35,23 +36,23 @@ Payouts to the active wallet subtract the gas fee from the payout. The payout is
 
 There is no cost to participate as a provider.
 
+
 ## Phases of the company
 
-The launch of the network and community payments create four phases of the company:
+The launch of the network and community payments creates four phases of the company:
+
 0. Repeatable network
-1. Subsidized community payments
-2. Self-supported community payments
+1. Repeatable premium product
+2. Scale
 3. Profitable company
 
 In phase 0, we will focus on a network that is better than other  consumer VPNs, and scaling the network in a cost efficient way. The exit is a scalable network with almost fixed operating costs.
 
 In phase 1, the premium revenue is not enough to subsidize the community payments. We’ll be in this phase as long as premium conversion per MAU is less than .2/premium price [^2]. At our current premium price of $5/month, the break-even exit of phase 1 is at 4% conversion of users to premium users. In this phase the company will focus on a repeatable premium offering that converts above the break-even rate to exit.
 
-In phase 2, the company can scale revenue with an almost fixed operating cost. The company will scale faster if the conversion to premium is higher than the break-even. In this phase the company will focus on volume to exit.
+In phase 2, the company can scale revenue with an almost fixed operating cost by scaling MAU. The company will scale faster if the conversion to premium is higher than the break-even. In this phase the company will focus on volume to cover operating costs and exit.
 
-In phase 3, the company will profitable as it scales. At this point we will look at expanding our TAM with new premium products starting at phase 1.
-
-
+In phase 3, the company will be profitable as it scales. At this point we will look at expanding our TAM with new premium products starting at phase 1.
 
 
 ## Payout sweep
@@ -61,11 +62,12 @@ Payouts are done weekly and the subsidy is computed from the previous week’s r
 
 ## Privacy
 
-Payment on our network is also private.
+Payment on our network is private.
 
 Transfer between a user and provider is preceded by a contract. A contract combines payment information, access control, and priority so that a user and provider can directly communicate and apply the right rules. Both user and provider close a contract, and if they agree, the contract is settled and added to the payout.
 
 Settled contracts used for a payout are removed one week after the payout. This is in line with our approach of aggressively deleting user information from our system. If there are any issues with a payout, participants must contact us within one week. 
+
 
 [^1]: As a formula, the subsidized payout to a single provider is `0.75 * sum(all contracts serviced by provider)/sum(all contracts) + (0.25 / NumberOfCountries) * sum(all contracts serviced by provider)/sum(all contracts in provider's country)`
 
