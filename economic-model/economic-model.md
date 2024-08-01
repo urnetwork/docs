@@ -20,7 +20,7 @@ Note that with subsidized transfer, paid transfer trends to zero. We keep it in 
 
 ## Payments to the community
 
-We set our subsidy payment as 10% of premium revenue with a guaranteed minimum amount of $.1 per MAU. MAU does not include automation and bots. The payout amount per device is determined by the amount of data routed, weighted 75% against all global devices and 25% against devices in the same country, where all countries are weighted equally. The guaranteed minimum amount will adjust every year after launch. [^1]
+We set our subsidy payment as 10% of premium revenue with a guaranteed minimum amount of $.1 per MAU. MAU does not include automation and bots. The payout amount per device is determined by the amount of data routed, weighted 75% against all global devices and 25% against devices in the same country, where all countries are weighted equally [^1]. The guaranteed minimum amount will adjust every year after launch.
 
 We set our referral bonus as 50% of the earnings of the referred user and 50% of their referral bonus.
 
@@ -46,7 +46,7 @@ The launch of the network and community payments creates four phases of the comp
 2. Scale
 3. Profitable company
 
-In phase 0, we will focus on a network that is better than other  consumer VPNs, and scaling the network in a cost efficient way. The exit is a scalable network with almost fixed operating costs.
+In phase 0, we will focus on a network that is better than other consumer VPNs, and scaling the network in a cost efficient way. The exit is a scalable network with almost fixed operating costs.
 
 In phase 1, the premium revenue is not enough to subsidize the community payments. We’ll be in this phase as long as premium conversion per MAU is less than .2/premium price [^2]. At our current premium price of $5/month, the break-even exit of phase 1 is at 4% conversion of users to premium users. In this phase the company will focus on a repeatable premium offering that converts above the break-even rate to exit.
 
