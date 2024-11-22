@@ -1,5 +1,9 @@
-![connect-gh](https://github.com/bringyour/product/assets/531246/94570a87-5657-4c76-84b2-474da137300b)
+![URnewtwork](res/ur.webp)
 
-[Discussion](https://github.com/bringyour/product/discussions)
+# URnetwork docs
 
-[Roadmap](https://github.com/bringyour/product/discussions/2)
+Welcome to the URnetwork docs where we go into more details about how to hack and use the network.
+
+Many docs get refined in conversations [on our Discord](https://bringyour.com/discord). 
+
+PRs are welcome to the [docs on GitHub](https://github.com/urnetwork/docs).
