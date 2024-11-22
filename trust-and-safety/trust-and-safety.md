@@ -11,7 +11,7 @@ The process we use is to combine an automated "frontline" with a catch-all "back
 
 ## Warrant canary
 
-If the [warrant canary](https://bringyour.com/warrant-canary) exists, it means that we confirm:
+If the [warrant canary](https://docs.ur.io/trust-and-safety/warrant-canary) exists, it means that we confirm:
 
 - BringYour has never turned over our encryption or authentication keys or our customers' encryption or authentication keys to anyone.
 
@@ -27,7 +27,7 @@ If the [warrant canary](https://bringyour.com/warrant-canary) exists, it means t
 
 ## Transparency report
 
-We publish [quarterly statistics](https://bringyour.com/transparency-report) of the number and type of abuse reports, decryptions of the abuse logs, and type of outcomes.
+We publish [quarterly statistics](https://docs.ur.io/trust-and-safety/transparency-report) of the number and type of abuse reports, decryptions of the abuse logs, and type of outcomes.
 
 
 
