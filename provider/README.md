@@ -60,13 +60,14 @@ Note: you can download pre-built binaries from the [nightly releases](https://gi
 
 1. Log into your network in the [web UI](https://ur.io/?auth). You can create a new network here also.
 2. Once logged in, there is an button in the dialog called "Copy an Auth Code". Tap that button to copy a time-limited auth code. You'll use this in the next step to generate a local JWT file.
-3. `./provider auth <paste auth code here>`
+3. `./provider auth`. Paste the auth code at the prompt to enter the auth code.
 4. You should see output that says "Saved auth to ~/.urnetwork/jwt". Now any provider that runs in your user will be authenticated to your network. You can copy the `$HOME/.urnetwork` dir to new environments to quickly set up the provider.
 
 #### To run a provider on your network, run the command below.
 
 ```
 ./provider provide
+# you should see the message "Provider XXX started"
 ```
 
 This runs in the foreground and provides egress capacity to the network until killed. Payouts are made to the wallet set up in the network. You can use [one of the apps](https://ur.io/app) to set up your wallet.
