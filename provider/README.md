@@ -36,25 +36,9 @@ cd urnetwork
 git clone https://github.com/urnetwork/connect
 git clone https://github.com/urnetwork/protocol
 cd connect/provider
-make
-# the provider binaries are compiled into binaries at ./build/$OS/$ARCH
-# build/darwin/amd64/provider
-# build/darwin/arm64/provider
-# build/linux/amd64/provider
-# build/linux/arm64/provider
-# build/linux/arm/provider
-# build/linux/386/provider
-# build/windows/amd64/provider
-# build/windows/arm64/provider
+go build
+# the provider binary is now at ./provider
 ```
-
-Choose the `provider` binary for your OS and architecture.
-
-Note: `darwin` is for macOS
-
-Note: if you have a modern Intel or AMD processor, choose `amd64`. If you have a modern Apple or Qualcomm processor, choose `arm64`. Otherwise for Linux IoT and router platforms, run `uname -m` to find your architecture.
-
-Note: you can download pre-built binaries from the [nightly releases](https://github.com/urnetwork/connect)
 
 #### To initialize a provider on your network, follow the steps below.
 
@@ -101,6 +85,35 @@ On modern macOS, background processes are managed with `launchd` using the comma
 8. Verify the unit is running with `tail -f /var/log/system.log | grep -i provider`. You should see the message "Running on port XX"
 9. You're all set!
 
+### Provider binary on multiple platforms
+
+If you want to build the binary for multiple platforms, use the Makefile.
+
+```
+mkdir urnetwork
+cd urnetwork
+git clone https://github.com/urnetwork/connect
+git clone https://github.com/urnetwork/protocol
+cd connect/provider
+go build
+# the provider binaries are compiled into binaries at ./build/$OS/$ARCH
+# build/darwin/amd64/provider
+# build/darwin/arm64/provider
+# build/linux/amd64/provider
+# build/linux/arm64/provider
+# build/linux/arm/provider
+# build/linux/386/provider
+# build/windows/amd64/provider
+# build/windows/arm64/provider
+```
+
+Choose the `provider` binary for your OS and architecture.
+
+Note: `darwin` is for macOS
+
+Note: if you have a modern Intel or AMD processor, choose `amd64`. If you have a modern Apple or Qualcomm processor, choose `arm64`. Otherwise for Linux IoT and router platforms, run `uname -m` to find your architecture.
+
+Note: you can download pre-built binaries from the [nightly releases](https://github.com/urnetwork/connect)
 
 ### Provider container
 
