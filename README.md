@@ -1,4 +1,4 @@
-![URnewtwork](res/ur.webp)
+![URnetwork](res/ur.webp)
 
 # URnetwork docs
 
