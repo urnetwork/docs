@@ -1,15 +1,15 @@
 TERMS AND CONDITIONS FOR PROVISION OF INTERNET SERVICES:
 
 **THESE TERMS AND CONDITIONS CONTAIN IMPORTANT INFORMATION REGARDING
-YOUR USE OF BRINGYOUR SERVICES**
+YOUR USE OF URNETWORK SERVICES**
 
 **PLEASE READ THEM CAREFULLY**
 
 This Terms and Conditions (the "Agreement") is entered into between the
-Customer (\"You\", \"Your\", \"Customer\") and Bring Your, LLC
+Customer (\"You\", \"Your\", \"Customer\") and BringYour, Inc.
 (hereinafter referred to as \"Provider\"). This Agreement includes
-BringYour\'s Privacy Policy as set forth at
-bringyour.com (the "Website") and any
+URnetwork\'s Privacy Policy as set forth at
+ur.io (the "Website") and any
 restrictions, instructions, and prohibitions located on the Website or
 Mobile App (collectively, \"Agreement\"). BY INSTALLING OR USING THE
 APPLICATION OR SERVICES, YOU: (A) ACKNOWLEDGE THAT YOU HAVE READ AND
@@ -262,11 +262,11 @@ Customer and Provider enter into an agreement, (the "Agreement") as follows:
 
         FOR PROVIDER:
 
-        <notice@bringyour.com>
+        <notice@ur.io>
 
         with Copy to:
         
-        Bring Your, LLC
+        BringYour, Inc.
         2261 Market Street #5245
         San Francisco, CA 94114
 

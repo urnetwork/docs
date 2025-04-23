@@ -4,12 +4,12 @@ Last modified: April 3, 2023
 
 Introduction
 
-Bring Your, LLC (**\"Company\"** or **\"We\"**) respect your privacy and are
+BringYour, Inc. (**\"Company\"** or **\"We\"**) respect your privacy and are
 committed to protecting it through our compliance with this policy.
 
 This policy describes the types of information we may collect from you
-or that you may provide when you visit the BringYour website or use the
-BringYour app (our \"Products\") and our practices for collecting,
+or that you may provide when you visit the URnetwork website or use the
+URnetwork app (our \"Products\") and our practices for collecting,
 using, maintaining, protecting, and disclosing that information.
 
 This policy applies to information we collect:
@@ -51,7 +51,7 @@ or on or through any of its features. If we learn we have collected or
 received personal information from a child under 16 without verification
 of parental consent, we will delete that information. If you believe we
 might have any information from or about a child under 16, please
-contact us at: <notice@bringyour.com>.
+contact us at: <notice@ur.io>.
 
 California residents under 16 years of age may have additional rights
 regarding the collection and sale of their personal information. Please
@@ -223,4 +223,4 @@ this privacy policy to check for any changes.
 Contact Information
 
 To ask questions or comment about this privacy policy and our privacy
-practices, contact us at <notice@bringyour.com>.
+practices, contact us at <notice@ur.io>.

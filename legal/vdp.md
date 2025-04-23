@@ -1,12 +1,12 @@
-# Bring Your, LLC Vulnerability Disclosure Policy
+# BringYour, Inc. Vulnerability Disclosure Policy
 
 ## Introduction
 
-Bring Your, LLC welcomes feedback from security researchers and the general public to help improve our security. If you believe you have discovered a vulnerability, privacy issue, exposed data, or other security issues in any of our assets, we want to hear from you. This policy outlines steps for reporting vulnerabilities to us, what we expect, what you can expect from us.
+BringYour, Inc. welcomes feedback from security researchers and the general public to help improve our security. If you believe you have discovered a vulnerability, privacy issue, exposed data, or other security issues in any of our assets, we want to hear from you. This policy outlines steps for reporting vulnerabilities to us, what we expect, what you can expect from us.
 
 ## Systems in Scope
 
-This policy applies to any digital assets owned, operated, or maintained by Bring Your, LLC.
+This policy applies to any digital assets owned, operated, or maintained by BringYour, Inc.
 
 ## Out of Scope
 
@@ -39,7 +39,7 @@ In participating in our vulnerability disclosure program in good faith, we ask t
 
 ## Official Channels 
 
-Please report security issues via <security@bringyour.com>, providing all relevant information. The more details you provide, the easier it will be for us to triage and fix the issue.
+Please report security issues via <security@ur.io>, providing all relevant information. The more details you provide, the easier it will be for us to triage and fix the issue.
 
 ## Safe Harbor
 
