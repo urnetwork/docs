@@ -27,7 +27,8 @@ darwin/
 Or use the community docker image:
 
 ```
-docker run -ti bringyour/community-provider --help
+docker pull bringyour/community-provider:latest
+docker run -ti bringyour/community-provider:latest --help
 ```
 
 ## Notes
