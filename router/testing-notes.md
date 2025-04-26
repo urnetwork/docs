@@ -6,7 +6,7 @@ Below is a table of router and device models, architecture, and notes when runni
 
 ## Provider binary
 
-Download the `urnetwork-provider-XXX.tar.gz` to get binaries for many architectures:
+Download the `urnetwork-provider-XXX.tar.gz` from [releases](https://github.com/urnetwork/build/releases) to get binaries for many architectures:
 
 ```
 linux/
