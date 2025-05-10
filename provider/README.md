@@ -33,13 +33,13 @@ The binary can be compiled and deployed from source, or deployed with our pre-bu
 You can install the provider using the following command in your Command Prompt (cmd.exe) or PowerShell:
 
 ```
-powershell -c "irm https://github.com/urnetwork/connect/tree/main/scripts/Provider_Install_Win32.ps1 | iex"
+powershell -c "irm https://raw.githubusercontent.com/urnetwork/connect/refs/heads/main/scripts/Provider_Install_Win32.ps1 | iex"
 ```
 
 In case if you wish to uninstall the provider, run the following:
 
 ```
-powershell -c "irm https://github.com/urnetwork/connect/tree/main/scripts/Provider_Uninstall_Win32.ps1 | iex"
+powershell -c "irm https://raw.githubusercontent.com/urnetwork/connect/refs/heads/main/scripts/Provider_Uninstall_Win32.ps1 | iex"
 ```
 
 #### Linux and macOS
