@@ -28,6 +28,22 @@ The binary can be compiled and deployed from source, or deployed with our pre-bu
 
 ### Provider binary
 
+#### Windows
+
+You can install the provider using the following command in your Command Prompt (cmd.exe) or PowerShell:
+
+```
+powershell -c "irm https://raw.githubusercontent.com/urnetwork/connect/refs/heads/main/scripts/Provider_Install_Win32.ps1 | iex"
+```
+
+In case if you wish to uninstall the provider, run the following:
+
+```
+powershell -c "irm https://raw.githubusercontent.com/urnetwork/connect/refs/heads/main/scripts/Provider_Uninstall_Win32.ps1 | iex"
+```
+
+#### Linux and macOS
+
 Run the following commands to build the `provider` binary from source. You will need `go` version of at least 1.23[^1] and `git`.
 
 ```
@@ -84,6 +100,15 @@ On modern macOS, background processes are managed with `launchd` using the comma
 7. `sudo launchctl start /Library/LaunchAgents/urnetwork-provider.plist`
 8. Verify the unit is running with `tail -f /var/log/system.log | grep -i provider`. You should see the message "Running on port XX"
 9. You're all set!
+
+*Windows*
+
+When you run the installation script, it will ask you whether you want to add the provider program to system startup programs list. If you do, it will start in background when your system boots up.
+It is possible to run the provider manually in the background:
+
+```
+powershell -NoProfile -WindowStyle Hidden -Command "Start-Process urnetwork.exe -ArgumentList 'provide' -WindowStyle Hidden"
+```
 
 ### Provider binary on multiple platforms
 
