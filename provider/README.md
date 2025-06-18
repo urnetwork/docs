@@ -42,7 +42,25 @@ In case if you wish to uninstall the provider, run the following:
 powershell -c "irm https://raw.githubusercontent.com/urnetwork/connect/refs/heads/main/scripts/Provider_Uninstall_Win32.ps1 | iex"
 ```
 
-#### Linux and macOS
+#### Linux
+
+Run the following to install the provider:
+
+```bash
+curl -fSsL https://raw.githubusercontent.com/urnetwork/connect/refs/heads/main/scripts/Provider_Install_Linux.sh | sh
+```
+
+If you wish to uninstall it:
+
+```bash
+curl -fSsL https://raw.githubusercontent.com/urnetwork/connect/refs/heads/main/scripts/Provider_Uninstall_Linux.sh | sh
+```
+
+#### macOS
+
+You'll have to build the provider binary from source, as of now. Please refer to the next section.
+
+#### Build from source
 
 Run the following commands to build the `provider` binary from source. You will need `go` version of at least 1.23[^1] and `git`.
 
@@ -76,16 +94,14 @@ This runs in the foreground and provides egress capacity to the network until ki
 
 *Linux*
 
-On modern Linux, background processes are managed with `systemd` using the commands `systemctl` and `journalctl` for logs. The following steps set up a basic systemd unit to run the provider binary using the configuration at `$HOME/.urnetwork`.
+If you have `systemd`, then the installer script should have automatically configured a systemd service when you installed the provider. The service is `urnetwork`, so you can use the usual `systemctl` commands to control it:
 
-1. Download the [latest systemd template from Github](https://github.com/urnetwork/connect/provider/systemd)
-2. Edit the `/path/to/provider` to the actual provider path
-3. Edit the `$USER` to the user you want to run as
-4. Make sure for that user, `$HOME/.urnetwork` is in place
-5. `sudo cp <EDITED urnetwork-provider.service> /etc/systemd/system/urnetwork-provider.service`
-6. `sudo systemctl enable urnetwork-provider.service`
-7. Verify the unit is running with `journalctl -u urnetwork-provider.service`. You should see the message "Running on port XX".
-8. You're all set!
+```bash
+systemctl --user start urnetwork    # Start
+systemctl --user stop urnetwork     # Stop
+systemctl --user enable urnetwork   # Start on login
+systemctl --user disable urnetwork  # Disable start on login
+```
 
 *macOS*
 
