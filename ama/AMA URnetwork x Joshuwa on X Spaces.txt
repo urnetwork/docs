@@ -1,0 +1,453 @@
+Unknown Speaker  3:10  
+All right, you
+
+Unknown Speaker  4:28  
+Good, good. Is this just us, open to the community. All right,
+
+Unknown Speaker  3:12  
+want to Check your mic real Quick. You
+
+Joshuwa  3:12  
+you want to check your money real quick.
+
+Unknown Speaker  4:11  
+Oh, here we go. Hey, Joshua, can hear me now?
+
+Unknown Speaker  4:11  
+Oh here we go. Hey, Josh, Rick, you hear me now.
+
+Unknown Speaker  4:18  
+And I was so confident.
+
+Unknown Speaker  4:55  
+awesome. Okay, cool. Yeah, it's really great to be here. Thanks for setting the. And I was so confident.
+
+Unknown Speaker  4:18  
+So confident Hear me now, there we go.
+
+Unknown Speaker  4:20  
+Kimmy knock. There we go.
+
+Unknown Speaker  4:20  
+Kimmy knock. There we go.
+
+Unknown Speaker  4:23  
+Hey, there we go, how are you.
+
+Unknown Speaker  4:23  
+Hey, there we go. How are you good? How are you
+
+Unknown Speaker  4:23  
+Hey, there we go, how are you. Good, how are you.
+
+Unknown Speaker  4:28  
+good? Good? Is this just us, or is it open to the community? Oh, it's open to everybody. So first off, I'd like to welcome everybody to our spaces. Tonight. Say goodbye to your VPN. Today's guest, we have Brien, the founder of your network. Welcome in, brother.
+
+Brien Colwell  4:49  
+Hey, thanks, Joshua, Hey, I just want to confirm. Are we going to record this as well? Yep,
+
+Unknown Speaker  5:00  
+Stuff on short notice, then really excited to
+
+Unknown Speaker  5:04  
+speak with you today about everything we're working on, right? So let's get right into it. Explain to the community what your network is,
+
+Brien Colwell  5:15  
+all right? So we started on this mission to build the best VPN in the world two years ago,
+
+because we were super frustrated with the current state of the art of VPNs for consumers. So if you go to the App Store,
+
+something like 20% of the top 100 apps are VPNs. So
+
+there's a ton of VPN VPNs out there, but they're all built kind of the same way. Basically, you have your clients connecting to a server that's controlled by some company.
+
+And fundamentally felt like this model was kind of antiquated. Basically, it sort of wasn't delivering true privacy that people wanted. So people want sort of hard privacy, just like we have cryptographically hard security, we also want cryptographically hard privacy so that people can't trace our activity and build profiles and target us as we're online, and we set out on our mission to basically look at every aspect of the the way VPNs were built today, which is really kind of an older model that started in the early aughts, or which Is what I'm trying to say, is the early 2000s
+
+some people call it the odds. I'm gonna, I'm gonna use that word.
+
+So in the early aughts, basically this model came around where, you know, you have these VPN servers around the world, and we've been kind of doing things the same way for, like, 20 years, right? And that's what the current generation is.
+
+So what we wanted to do at your network is question, really every assumption about how VPNs are built and end up with something that's kind of transformative for not only VPNs, but also connectivity in the larger sense, like we feel like there's a lot of
+
+fundamental problems that all come down to,
+
+ultimately a question of safety and and so your network.
+
+What we're trying to do
+
+is fundamentally make it safe for people to share their internet with each other, and so you don't have to be,
+
+you know, like a school or a corporation or anything to share your internet. You can just be a normal person. And what we focus on, kind of first and foremost at your network is
+
+making it safe for you to participate. Yeah, and so by kind of focusing on the safety of the network and making it easy for people to participate, a lot of really awesome things kind of STEM forth from that. So
+
+Joshuwa  8:19  
+let me stop you there.
+
+Awesome. Your network to become an alternative to a VPN. Go a little deeper on the technology of what sets it apart?
+
+Brien Colwell  8:33  
+Okay, yeah, yeah. So, so there's two things that we really focus on. So one I was, I was just talking about, right, which is our safety. So
+
+under the hood, we are a internet
+
+security company. So we write software that runs on all of our nodes, that infects traffic and shuts down bad behavior, just like the largest Internet security companies, like Cloudflare or etc do, so we write specialized software that basically runs on all of our nodes and keeps the network safe and so,
+
+so that's our first big difference, our second big difference, and and you'll notice, Like, before I move on to our second point. Yeah, we are
+
+taking a very different stance than most VPNs, and I think our users appreciate the stance. Actually, it's kind of counterintuitive. So we we don't build a VPN for illegal activity or like, dark web stuff. We build a VPN to give people private, secure, available internet, you know, and it turns out that's what most people want. So like, most people don't want VPN to, like, you know, bad, bad stuff,
+
+exactly. They just want. They just want anonymous internet that's private and secure, that just.
+
+Works, right? It has high quality. They can be anywhere in the world, and it just works. And so that was kind of like, one of our learnings from our from our focus on security, is that, look, a lot of people don't want this whole dark web, you know, like hacker network kind of stick that a lot of VPNs try to sell, right? Like, a lot of people just want internet that works, and that's private, right? And so so our focus on securities aligned with that mission. We're like a legitimate, you know, network that that is really, you know, following local regulations of local laws and delivering privacy and security within those laws. And we think that sets us up really well to basically work with partners, right? Because, I mean, you know, tech companies, right, want to work with legitimate, legitimate partners. And what we're doing is we're building a garden of, you know, privacy and security and availability that that we can bring people into our garden, right? And everyone can, kind of can be safe in the garden. And so, so that's really important to us, is to build, like, legitimate technology. So I want to go to our second major innovation that we've done, which is rethinking the client server model. And so, like I said,
+
+most VPNs are built following this model that kind of came around in the 2000s
+
+where you have a single client connecting to a single server, and you just, and they try to make that like as fast as possible. So typically, what happens is these servers are on, like CDNs or cloud data centers, but, but there's kind of a tension there, and so this is attention a lot of VPN users feel, which is, you can have like a really fast server, but then what happens is, most of The Internet kind of blocks that server because it can tell it's like a VPN server, right? So it's like, basically, like, Oh, you're trying to, you're trying to watch a video from a CDN edge that that seems suspicious. So you're trying to, you know, play a game from a data center that seems suspicious, right? So a lot of these, these VPN edges get blocked, right?
+
+And so we kind of looked at the space more as, you know, let's take a step back and let's like, fundamentally question the client server model, because it kind of, you know, it kind of ends up in one place. Like, if all you care about is having the fastest possible VPN, you kind of end up just putting your nodes, through your servers on like, this big cloud infrastructure, and
+
+risk,
+
+exactly, and so. So we were like, Hey, let's take let's take a step back, right? Let's actually think about the whole space. And it's more than just feed. There's actually two other factors that are, like as important as speed, and those other factors are the privacy security and what we call availability. And so users, the VPNs, actually want all three. They want privacy security, they want availability and they want speed. And what you get from traditional VPNs is, typically they prioritize speed,
+
+but if you look at what we prioritize in our network, is, is, is, is speed important to us, and we do a lot to make it fast, but we actually prioritize privacy, security and availability more than speed, and that lets us, that kind of frees us up to, like, really think about a new type of architecture. It's an architecture that's basically giving people realistic Internet by using instead of using
+
+data centers and CNN edges. What we're doing is, is we're letting
+
+people participate in creating nodes on the network, and we've built a protocol that can deal with all of these nodes on the network. So our protocol
+
+is an auction protocol, so,
+
+so in an auction, it's kind of cool, because it's one of the few like processes that we know about, where the more participants in an auction, right, the better outcome gets, right? That's kind of, that's kind of like how Christie's works, right? Like you get a lot of people in a room, and suddenly, you know, everything kind of gets sold at the best price, right?
+
+That's like our model, right? So our model is like, hey, let's put a bunch of nodes on the network, and anytime you try to make a connection,
+
+what we do is, is the clients in our in our protocols, basically letting.
+
+Is letting your phone or your device run an auction process for every single connection to choose the providers that can that can basically service that connection the best. Okay, and so is that based on what we need, or is that based on latency? Like, what? What's that based on? Yeah, it's purely based on performance. So, so basically what we do is we choose the
+
+provider for every single connection that is able to give you a real connection to the end server the fastest. So we're using this auction model to basically give users a way that, as we add more participants in the auction, they get, they get higher quality connections, right? They get faster connections. And that's like, mathematical, right? So, like, if we have like, a million nodes in the United States, and you're trying to connect, we're going to give you, like, the fastest out of, like, some sample of those million nodes, and so you're going to get, like, a really good node for every single connection, for whatever server you're connecting to, no. But the additional benefit, oh, sorry, yep, no, with that, is it based on location? Like, could you connect to a node in LA versus New York? If you're in the Midwest, New York, can you would a faster network potentially be in LA,
+
+absolutely. Yeah, absolutely. And that's what's really fascinating about the network. So in your network, we let people drill down to the city. So you can connect to a specific city, you can connect to a region which would be like a state or a province. You can connect to a country.
+
+And what's really fascinating about the auction model is like, there's different different sites and different servers performed differently in different regions, and so our model actually adapts to that the to the network. So for example, if there's like, a server that's really fast in California, providers in California are going to win those auctions for that server. But if there's a server that's like, really fast in like New York, providers are going to win that so, so we're really, like, bullish about this auction model as as sort of a network fundamental, yeah, and our entire network is built on it, where we basically match users to providers based solely on performance, and we've done it in a way that's, like, strictly better. So we don't slow down the user by running an auction. And so it's, like, heavily optimized, like a lot of you know, protocols supporting this auction, and the other, like, really awesome benefits of the auction model is that we can actually give users multiple paths through the network, right? So, like you might be sending data to one provider for one server, and you're sending it to another provider for another server. And so that's where we can really start to introduce hard privacy, because all your data is not going through one single node on our network. Essentially, what's happening is your data is being like distributed out through the network based on performance, but, but you're not, but you're not sending your data to any one single place. And so that was the foundation for us. That was the next question was, in a sense, is it broken down into shards between each of the nodes
+
+Exactly, exactly, and that's where, like there. That's a fundamental difference with of US versus other other VPNs, is we see our model, which is basically moving past IP address, right? So other
+
+other VPNs, you get, like, a single IP, right? You connect and your IP changes. You know, in our model, you get like, like many IP addresses. So for example, when you connect to your network, you might actually have 12 IP addresses that you're using simultaneously. Yeah, that was the thing. That was the thing I noticed last week when I connected, I had 10 connections at once. So in a situation like that, there's 10 IP addresses connected to my connection.
+
+That's it. Yeah, that's it. You have 10 IP addresses like spider man, right? You're like, shooting your web across the internet, sucking in all the servers, right? The cool thing about that is, like you're wearing your spider mask. So, like nobody can, nobody can put together your entire pro traffic profile, because it's been widely distributed. So it's very similar to Tor in that perspective, yeah, but we actually, we actually go farther than Tor, because in Tor, all of your data kind of goes through one exit node, even though they mask your IP address with like, three hops in your network, we have three hops, but your data also goes through multiple exit nodes, so it's like, even it's like, even more secure than Tor, or more private than Tor and so, so we think that's like a really cool innovation that we've done, like bringing this auction model and making like.
+
+Like the network just work fundamentally more privately while delivering and the cool like the cool hack that I think we've done is, not only have we made the network more private, but we've actually given users a higher quality network at the same time. And so I want to explain that. And so this is what we kind of call availability, which is
+
+we think of availability as like two parts. So from you to the VPN, like infrastructure, yeah, then from the VPN network to the cloud servers, right? So, like, from you to the VPN, and then from the VPN to like Netflix, right? Like that is that the complete path of your data. But those are like two separate issues that we see, like, one is when you try to send data to the to the VPN network. Sometimes, like, things get blocked, or there's like, local firewalls and stuff that prevent you from communicating with the VPN network and then from the VPN network to the cloud infrastructure, if, if those egress nodes or those if that V if those VPN nodes look like VPN servers, right? Like their their CDN edges or AWS, you know,
+
+cloud servers,
+
+those services like block the block those connections as well, right? They treat those connections differently. And so what's really cool about our model is because we're like, distributing traffic so widely through the network,
+
+what that means is it's harder to be it's harder to block that traffic to the network, and then from the network to the to the cloud infrastructure. Our traffic looks just like it's like a bunch of little houses. Basically. It's really hard to tell that this is actually VPN traffic,
+
+normal traffic on the network. Yeah, exactly, exactly we use web protocols. It looks like, basically, have, we have like, five people sitting in a living room in a house, and there's like, really nothing like anomalous about that. And so that we think it's like a super scalable model that, basically, you know, scales. It gets better as we add more nodes to this model. Basically, we're able to distribute the traffic more. We're able to make the traffic higher quality. And so from our perspective, like I said, kind of going back is like, we're trying to solve the safety problem, right? That's like our that's like our heart, yeah, our system, because we make it safe for everyone to participate, so that when everyone participates, we get more nodes, right? That's kind of our mission. Is, like, we want a really low ratio of users to participants. So, like we want, for example, today, I think we're around five users for every one participant, okay? And if you kind of visualize that, right, what that means is our network, your our network, or your network is,
+
+is basically looks like a bunch of little houses, right? It's like an Airbnb system, right? So we have a bunch of little houses all over the world where you have like, five people sitting in every house, right? And that's kind of how that, that's kind of what it looks like on the network. So there's, like, nothing really, network has five people on it,
+
+exactly, right? Because we've, we've lowered that ratio of user to provider, yeah. And that's, like, that's totally different than any existing VPN today. Like, if you look like a big consumer VPN, you might have a ratio of, like, you know, 50,000 users to one, one IP, right, right. Kind of like it looks like, pretty suspicious it's on the network perspective. Like, why? Why are there, like, 50,000 people signing into my server from this one IP, right,
+
+right. But let's see that's from our perspective. We think we have a scalable model, or a flywheel that as we add more nodes, because it because it's safe to participate. Anyone can participate, even from your phone, right? You can be a participant. As we add more nodes, we actually lower our ratio. So today, we're at five to one, we could have millions of users at a five to one ratio. And that's just that's just extraordinary. We think that that that's a whole new level of infrastructure from a quality perspective. Now with you saying that there's a couple of things I wanted to touch on there. One was, what are some of the reasons a regular person in the world would want to use a VPN, or in this case, a VPN alternative, what types of data would they want to keep secure? And then after that, let's go into these nodes a little bit more.
+
+Okay, cool. Yeah, yeah. Yeah. I mean, this is like the classic question that every Privacy project gets asked, yeah. And I think you'll hear, like, apps, like signal, you know, talk about this a lot, which is, like, you know, privacy in itself is a really good thing. So a lot of people don't think about all the ways their data is being harvested. But.
+
+I also nobody really asked you, right? So, like, in the US,
+
+for example, like, nobody asked you whether it was okay if your ISP could sell your data, right? Like, it's over, right? Exactly like it kind of like, if you ask the normal person, like, like, do you agree that Comcast can, like, sell your browsing data so that advertisers can target you, right? Like, most people be like, that's kind of sketchy, but like, nobody asks you if, like, you don't even have a choice, right? You know, basically these laws that you know it keeps changing, like, one year they can't do it, the next year they can do it, when then they can't do it, then they can do it. Right? It's like, these laws keep changing, but you like, as a person, you have no agency right to make that decision. It's like, it's like somebody else is making the decision for you, like, you don't get to say anything. And it's kind of the same with pretty much everything online, right? Like, for example, like,
+
+Joshuwa  25:56  
+there are many, you know, profiles being built of you based on your IP address, right? Like, basically
+
+figuring out, like, what sites you go to, figuring out what stuff you look at, right, right, like, and website. Another thing I noticed personally, like in general, is if I go to Amazon or Best Buy and I look at a product, say, I'm looking at a Samsung phone or a phone case, and then for the next two weeks, I'm getting nothing but ads about that phone case on any website I go to,
+
+Brien Colwell  26:31  
+yeah, exactly, exactly, and you don't know where that came from. Are they tracking my IP? Is it a cookie? You know, it's like ways
+
+that the stuff,
+
+right? And so the very simple answer for me is, like a VPN is, is your agency? It's like, the only way you can take back your data and your privacy, yeah? Like, without a VPN, you basically have no voice. You can't control your data, you can't flip the narrative. You can't say, like, my identity is my identity, right? Like I choose who gets to know who I am, right? So there's no way to live out,
+
+right, right? Exactly, without a VPN. That's like the only way we have, from a from, like, a technical perspective, to become your master of your own identity, yeah, and so, so I think it's like a, you know? I think it's a good thing, and I and it's, and it's a completely legitimate thing to basically say, I don't want people to track me. I don't want people to like who I don't want to know who I am. I want to be anonymous, right? And banking apps are, or different apps that you're using, like, different things like that, to where, if money is involved, you don't want somebody that's tracking your internet traffic to know what bank you're using, like that could get crazy
+
+Exactly, exactly. And so, like, the short answer to the privacy question is, like, it's really just about agency, like, like, you have the ability to make to control your identity, right? Yeah. On the security front, like, what we do on our VPN is we, we basically upgrade the internet from, like, the older security, the older protocols, to the newer protocols. And so from a security perspective, you know, security is like, basically, whoever I'm talking to, I don't want anyone else to listen in on that, right? Like, that's like, a security perspective. It's more about, like, you know, can somebody listen in? You know, what we do on our network is we make sure every single connection through our network is end to end encrypted. So even, like, the situation, you'll find a lot is you'll have apps or something that are using like older protocols. And so like, if you're using a browser, like the browser might be implementing like modern protocols, but then you're using an app, and it might have older protocols.
+
+The great thing about your network is we're forcing everyone to use the modern protocols, and so we're, like, working in the background and upgrading all these protocols. Yeah, we're following a lot of the work that's happening to make the the internet more basically encrypted and more secure, both from like a,
+
+like a fully encrypted perspective. There's a lot of work that's going on right now on the
+
+Internet Engineering Task Force IETF, to like, increase the encryption on the internet. And our direction is, we want to bring that we want to bring that new encryption to users faster. There's also a lot of work going on with like, for example, post quantum encryption, which is making traffic today more resilient to quantum attacks in the future. It's kind of like a Back to the Future thing, yeah? Basically, like the scenarios, like somebody saves your captures your packets today, and saves them for 30 years, and then in 30 years, they break it with a quantum computer in a second, right? Yeah. So what we're doing with our security.
+
+Here, it's like, Doc, like, back to the future. Let's go rescue our packets, right? But um, so what we're doing is the
+
+we're working on, on, basically bringing those standards into our into our network at as just the baseline security and so, you know, both privacy and security matter. And then I just want to say that typically, you make a trade off, right? When you add more privacy and security, the internet becomes less available with with classic models, like, like I said, right? Like, basically, if you start routing all your data through, like a server in the cloud, suddenly websites stop working, and generally things stop working, right? So the great part about our network is that you get privacy and security the best, the best privacy, the best security, and you also get the best quality network. So the network works just like normal, just like you're sitting in a house in that location. And so you get, you get all three. And we think that that's just, that's just amazing, and the cherry on top, and, yeah, we can dive into this. It's free. Yeah, let me.
+
+Joshuwa  31:13  
+Let me stop. For the listeners who may be interested in starting a node on the network. Basically what you do is you download the application, you create an account, and then you contribute your internet bandwidth to the network, and in return, you have the opportunity to earn rewards or participate in the network. So you can also use other people's bandwidth on the network. And like he said, it's completely free. I thought that was a unique perspective as well when it comes to having an alternative to a VPN, because most VPN services are nine, $10 a month. With this is free to use
+
+Brien Colwell  31:56  
+Exactly, exactly. And so I'd love, I'd love to explain how that works, because I, you know, this is a part of us just completely rethinking the whole infrastructure. So basically,
+
+we're following a playbook here, which is we are building a network that gets better as more people use it, right? So it's safe to use the safe to participate. The more people who use it and participate, the better the network gets. And it's free. It's free for everyone to use, right? So, so that's awesome. There's a there's a base value that people come in they get, they get value to get what they want. On top of that network, there's a ton of opportunity to work with partners to also make their products better, right? Like real win win scenarios that we see across industries that can use this network to basically make existing products and services better for users. And so there's a lot of cases where existing products have VPNs embedded, where sort of content is locked up in different regions, where tele telecoms have,
+
+you know, basically sort of older like security software that comes bundled with your phones, right? So also Wi Fi hotspots. And I'd love to talk about what we're doing there, but basically, you know, these are, like four examples of areas where you have, sort of like, companies that are doing things today, where our your where our network, your network, is
+
+able to deliver a better experience and a better value for the user. And so our view is that together, we build this infrastructure which is safe and free to participate, and then we go unlock value across many different industries using this infrastructure. And so as a business, we're actually really focused on we have two focuses as a business. One is a freemium model for the consumer side, like every VPN, pretty much, but we think we offer a much better free product because our cost is so much lower to basically run the infrastructure. So like, if you compare our our product to like proton VPN, free tier, like, you get so much more for free, and you can even earn money, which is like, totally crazy from your network then, versus, like, proton or any other free VPN. So, so just apples to apples, we are like the best free VPN. But also we're also focused on people who want to support us, who want to kind of join in and support us. We offer additional features for supporters, additional features to be able to control and connect in different ways, and so we're evolving those features, but but that's part of our business. Is basically being a freemium product where we offer sort of additional availability and.
+
+And control features on top of the Free VPN, okay? But our, our biggest business, the business that we're really chasing, what we think is kind of like, you know, our big opportunity is to integrate this network into these various partner use cases across different different industries, right? That's really what we're focused on as a as a business, and so, right? I think, you know, huge, absolutely huge. We think it's global. We think, you know, we think there's a world where, just like, you know, maybe, like, 40% of companies have a Microsoft subscription. What we're trying to do is basically put, like, a connectivity package together, or that that every single company would want for their employees, right? Like we, we've been working on a lot of partnerships, partnering with them, partnering with Wi Fi, so that wherever you go in the world, you can have an anonymous,
+
+secure, available connection
+
+that just works in your home country. So like, if you're on the road, you need to go back home, dial back home. It just works. And what we're trying to do is just create these kind of amazing connectivity experiences across industries, right? The businesses to content owners who want more people in their markets using their existing, their existing monetization channels. So for example, if you're a content owner in a country and you have existing advertising channels set up, right, we can actually bring more audience to your existing channels. We're not trying to disrupt your channels. We're not trying to, you know, steal your content. We're just literally bringing more people into your market. And so we think we can work with content owners to basically bring more people into their markets and create, like, amazing branded experiences to discover local content. That's cool. Um, we think that, you know, if you look at a lot of browsers and AI agents today, almost every one of them has an integrated VPN. We think that we have a better value proposition, because we can offer basically a higher quality
+
+product to their users at a lower cost.
+
+And we can also open up revenue potential for companies that can deploy a lot of, you know, a lot of nodes, we think we have an opportunity to work with many browsers to basically offer sort of alternative VPNs that work better for their users in many scenarios. We think we can do the same for AI agents and AI tools. And then we also look at telcos. Like many, many telcos have built in security packages for their users, they're sort of antiquated. They have a lot of the same issues that I spoke about right where if you use the security package, suddenly the internet doesn't work. We think we can fundamentally upgrade these, these sort of branded security experiences for various telco partners. That's another really excited while you're saying that, I'm thinking about for my Samsung devices, they have something to where you can use a VPN service through Samsung that comes standard on their device. So if you could partner with a phone manufacturer like that, and have it incorporated that way, that could be nasty,
+
+exactly. So that's what we're really focused on with our business, right? You see us like we have a freemium model for consumer but actually a lot of where we're going with our businesses to basically work with with industry partners to kind of transform these existing industries using our network and so, so that's really kind of what we're excited about with our network.
+
+I think, fundamentally, just from like a market opportunity perspective,
+
+what kind of really got me I don't know,
+
+as a business guy, you know, I'm like, a product guy, right? But like when I put my business hat on, what really got me jazzed about this network, is the demand for private, available, secure data, safe data on the internet is going up, right? Every year, right? The amount of data on the internet's going up. The demand for like a safe internet is going up. And I think fundamentally, what we have is a business where we're basically selling
+
+safe internet per gigabyte at a price, right? We put $1 price to that right. Like, you know, I won't say the price today, but you know, it's a very reasonable price to get a gigabyte of safe internet. And as the demand for safe internet goes up. The dollar spend on safe internet goes up, right, right,
+
+the capacity of the network and sort of the underlying sort of protocol of the network remains fixed. Which
+
+does that get trickled down to the nodes on the network as that.
+
+Joshuwa  40:00  
+That rate increases over time, the cost per gigabyte, would that trickle down to users on the network?
+
+Brien Colwell  40:07  
+Yeah, it's not even the cost per gigabyte goes up. I think the cost per gigabyte even goes down over time. Is that the total amount of gigabytes goes up exponentially as as you know, data demand goes up exponentially, yeah, and the capacity remains relatively fixed. And so we think that that's a really great type of infrastructure, right, where we're able to build something of long term value that's able to capture, like, a unique value in the market that, you know, basically the the the market opportunity for it is growing exponentially, and we think we can translate that, you know, back to basically the infrastructure. So the value of the infrastructure will just go up over time. Is, how, is how we see it, right? And so that's what we're like, really excited to build this type of infrastructure is because we think there's, like, this is a long term useful infrastructure that we think is going to transform a lot of these industries by giving users basically better connectivity in these industries.
+
+Joshuwa  41:11  
+Now the next thing I want to talk about
+
+is the encryption level. If I'm an end user on the network and I contribute my bandwidth. How do I know that nothing crazy is going to come through my IP? Um, how am I safe from bad actors on the your network?
+
+Brien Colwell  41:32  
+Yeah, yeah, yeah. Like I said, that's like our core problem, right? Safety? Yeah, we have this safety program that runs on every node, and it's watching the traffic on every node. And so,
+
+you know, a lot of VPNs, they talk about no logs, right? Like, no logs, no locks, right? We have a similar thing. It's like, we don't log traffic, but what we do is, whenever users have an issue,
+
+or whenever there's sort of, like a safety issue, yeah, that goes into a, like, a system that, basically what we make sure we do is, the way we address the issue, is we improve the program. So you can think of it like, okay, so, like, there was an issue. How are we going to fix it? Like, one way to fix it is, like, you go and you, like, ban a user account or something. That's a very old, like, reactive way of thinking, right, right? It's like you're always kind of banning things and, like, trying to, you know, just kind of clean up the mess, right? Our model is very proactive. It's basically, how are we going to fix it if we get an issue? What we do is we improve the security program to prevent that issue so it doesn't log the issue, it doesn't report the issue. It just literally detects the issue and traffic stops the traffic boom right there, like, black hole, yeah. And so that's like, super private. It does, you know, it's privacy preserving, but it's also,
+
+like the correct duty of care for everyone, which is, like, you're just, you're stopping. We, we stop every single case of bad behavior that we know about, because we follow this process, right? Yeah, somebody comes to us who has an issue, they say, Hey, this happened on my network. We say, okay, like that was that appears to meet our criteria of what bad behavior looks like in this region. And we update our program to basically stop that behavior, identify and stop that behavior. We release the update, and then henceforth that behavior stopped, you know, privately from the other has the opportunity to happen again.
+
+Exactly, exactly, so, so that's kind of how we see like us. Scaling is like we have a we currently have an emphasis on the, you know, building the security but over time, we see our company becoming like much more a security company, right where we're building this, this program that stops bad behavior, is like a major component of our company. I think, I think in some ways, we're like, one of the only,
+
+you know, decentralized project that that basically, our product is safety, right? I mean, it's like, for our entire network to work, we have to crack the safety issue. And so that means that we, we are like, you know, we're basically, you know, specializing in safety, and that's something that we think is unique. And we think we can also help other projects, you know, damage their safety as well, because we think safety is a is a need that probably every decentralized infrastructure has. And we're looking at ways that we can actually help other projects, including legacy VPNs, by the way, and I'd love to maybe just touch on that. But, you know, we'd love to even help legacy VPNs become more safe. You know, basically you don't have to do logs, you don't have to do anything, you just have to run these programs on your nodes, and it basically makes your VPN safer.
+
+Unknown Speaker  44:59  
+So.
+
+Joshuwa  45:00  
+Yeah, that's something that we specialize in. Yeah, that's nasty. Now, from an end user perspective, if I wanted to participate in the network, is the application available on both iOS and Android? Is it available on PC?
+
+Unknown Speaker  45:17  
+Where do I participate?
+
+Unknown Speaker  45:21  
+Yeah,
+
+Brien Colwell  45:23  
+okay, good question. It's available in iOS and Android as well as Mac OS, and that's a full client and participant app. So you can both use the network and participate in the network on iOS, Android and
+
+Mac OS, and we that's like, near and dear to our heart, like when we started the project, we wanted to make sure that the project worked well on phones.
+
+In our view, phones were the most ubiquitous competing platform on the planet. There are billions of phones, and we felt like that would be like, the right place for us to start is having, you know, having an infrastructure that can actually run on like, billions of phones, right? Yeah, and so we've had a particular focus on making sure the entire network can run entirely from phones, like phone to phone, okay,
+
+so, but then we also have a focus on providing other form factors and supporting other hardware which can actually be, like, more reliable than phones, right? I mean, the the cool thing is, like we do work phone to phone, but like
+
+we also, you can put us on a Raspberry Pi, you can put us on a router. You can put us on a on a Linux server, right? So we have a binary that you can basically put, and we also have a Docker image that you can put in a bunch of different places, and that will give you like a kind of, like a more industrial scale, like provider node. We work really hard, though, to make sure that the phones are competitive with like that more dedicated hardware. So like, even if you're running on a phone, you're earning ballpark what someone's earning running on a more dedicated piece of hardware,
+
+we are looking at how we can actually
+
+offer more value, though, with maybe our own dedicated hardware. And so that's something we're looking at. We're not quite ready to announce it, but, but yeah, we think, we think there are actually form factors beyond phones that would be interesting for us to explore as well. That'd be cool, especially like
+
+them, hotspot devices that you can get from the mobile carriers, if you could figure out some way to incorporate something like that, that'd be real cool. Yeah, that's kind of what, where we're going. We want to build like.
+
+We want to build like the best hotspot you've ever seen. Basically, you can do everything. You can hook your PlayStation up to it. You can hook your, your home network, up to it. You can, you know, you can create a little, you know, why hotspot that you can connect any device to it, you can earn from it, right? Like, we think,
+
+we think there's opportunity to create, like, a really cool, like, reasonably, reasonably priced networking device. Yeah, that, you know, that would be specialized, but, yeah, we're not, we're not quite ready to share what we're working on there. All right, cool. Well, I appreciate you taking the time I see uh black Chris in here. He's requesting to speak, so I'm going to see if he has a question for us real quick. Awesome.
+
+Unknown Speaker  48:38  
+You should be able to speak now, buddy, how you doing?
+
+Unknown Speaker  48:50  
+Fright. He didn't want no part of that. Oh, did any other guys have a question?
+
+Unknown Speaker  48:58  
+Raise your hand and I'll make
+
+Unknown Speaker  49:01  
+sure to get you up here real quick.
+
+Brien Colwell  49:05  
+I think we pretty much covered all the bases for what you guys are building. Um, trying to think if there's any other questions I had personally, because I know we spoke last month and we had an hour long conversation that time off the air and we covered a lot of the same information. I'm just trying to think, from an end user perspective, what other types of questions they would have the rewards model. Let's talk about that real quick, and then we'll close it up. Awesome. Yeah, yeah, yeah. Cool. So, yeah, great questions. And
+
+so we started as, like, a non crypto project.
+
+We felt like we just wanted to build an amazing VPN, right? And kind of like, disrupt the VPN space. We didn't think crypto was necessary for that. But as we've, like, been going.
+
+Thing we kind of had we realized, like we didn't see things clearly and
+
+yeah, token actually can, can deliver unique aspects that we didn't fully appreciate. You know, probably the most one of the most exciting parts of a token for us
+
+is the ability to
+
+capture the entire value of the infrastructure that we're building together. You know, basically we're, we're on a
+
+phase rollout right now of a token, so it's a three part phase. But basically where we started is we were doing USDC air drops, like every every week, where basically,
+
+we call it our economic model, but we take a portion of our revenue, plus some incentive subsidy, and we AirDrop it out to people based on a on a where the data is being sent on the network. It's kind of like a voting system, like where the data goes. Whoever routes the most you know basically how much data you route. That's contribute Exactly. That's how much you get. There's like some
+
+there's like a dual class voting system, basically supporters, people who pay the network, their their data counts more than free users. That's just so we can prevent like people from gaming and abusing the system. Basically,
+
+but, but,
+
+but, yeah, so, so basically,
+
+phase one of the of the projects was we AirDrop out USDC, and
+
+that's been going great ever since last year. People make a pretty good amount of USCC every month. We think it's cool because overall, like, we have like,
+
+10s of 1000s of users now, and we're able to support them basically cheaper than if we had to go spin up our own points of presence. That we feel like this model is like pretty great,
+
+and we also,
+
+but we're on a roadmap to basically launch a token. So
+
+we just actually launched what we call phase two of our earnings model. So we launched that last week. So in addition to getting your USDC airdrops, you now get a points inside the app, and we also now do USDP AirDrop plus points for referrals as well. So
+
+So what's really cool now is like, when you participate, you get USDC, but you also get points. And so those points accumulate in the app, and where we're going, and where this all going towards is what we call phase three, which is when we launch our token. And basically, at that point, you know,
+
+we anticipate, and when there's proper liquidity and everything
+
+we're going to we're going to transition from USDC airdrops, and points to just a strictly based token,
+
+token distribution so
+
+into a deepen infrastructure at that point, exactly that's fully defense. So basically however much you contribute, plus we have a reliability contribution. So how much you contribute with your data, plus how reliable you are, plus your referrals, all of that goes into basically token that gets distributed out by our Solana program every week.
+
+And
+
+and that's, you know, we think that that's really exciting, because, like I said, there's a fixed supply token, but the, you know, the dollar amount of of data that's being, you know, bought every year, of safe data that's being bought every year, just, we anticipate to keep going up, right? And so we think it's like a really cool infrastructure that's, like, you know,
+
+it's limited, like, you know, the size of the network is sort of limited, ultimately, right, by the number of phones in the world, or whatever. So it's like a fixed, a pretty fixed infrastructure that just grows in value over time. And so we think it's like a, you know, cool project for people to basically get token in. Because, you know, we this is like a long term mission, and we think there's a lot of applications long term for this type of network. And so, so, yeah, we're really excited about the token. We think it, it lets people kind of capture their contribution better than USDC. Like USDC, you get, you get some dollars. But fundamentally, I think, with all deep in the the value, the the infrastructure you create today creates more revenue in the future, right? So you want to, you want to have a way to basically try to capture future revenue for all the participants. And we think the the tokens are pretty good way to do that. So like people who participate, they're in token.
+
+Unknown Speaker  55:00  
+In and they're able to, kind of, you know,
+
+Unknown Speaker  55:03  
+see, you know, get, get value for their for their contribution, for all the, all the demand that they're trading.
+
+Unknown Speaker  55:11  
+Yeah, I'll share that now. Another thing I see Astros looking to speak, so I'll add him real quick.
+
+Unknown Speaker  55:18  
+Awesome. I
+
+Unknown Speaker  55:23  
+There you go, buddy. You have a question.
+
+Unknown Speaker  55:30  
+Astro
+
+Unknown Speaker  55:32  
+man, Joshua, I gotta tell you, it's the microphone button, bro. Like that microphone button on spaces, there's like a It's not clear. It's a little black microphone. You gotta click that. I don't know if Astro is having a problem on that or not,
+
+Unknown Speaker  55:47  
+but okay, I invited him to speak.
+
+Unknown Speaker  55:56  
+So
+
+Brien Colwell  55:58  
+well while we're waiting for Astro interrupt me anytime Astro, but I want to invite everyone to come to our Discord. It's HTTPS discord.gg/you.
+
+Are network. So just hop on our Discord, because we're chatting there all the time. I'd love to, I'd love to keep chatting with everyone on Discord. So I just want to plug that real fast. I also want to plug
+
+please go try download our apps. We're on the iOS App Store, the Google Play Store, F droid. We're also Solana mobile. So if you're someone with a photograph phone today, or you pre ordered a sneaker phone, we've done a special partnership with Solana mobile where you earn extra points by by just having your salon a mobile phone. So, so go, go check us out. Go download us. And for us, the biggest compliment you can give us is just use the app and tell us what you like and don't like, because, yeah, like we we thrive on feedback and and making it better. And you know, we have a like, we're continuing, continually improving based on user feedback, and it's so important to us from here, here, from everyone, so we can actually build a product that works for everyone.
+
+Unknown Speaker  57:08  
+Awesome. There you go. Ashtraw, see you're back, buddy, turn your mic down and ask that question.
+
+Unknown Speaker  57:16  
+Jim. Jim. Jim. Joshua and GM, buddy, how you doing? I'm fine. I'm cool. Man. GM, URL network.
+
+Unknown Speaker  57:27  
+GM, thanks for being here.
+
+Unknown Speaker  57:30  
+And yeah, I just, I downloaded the app, the URL app, VPN, a couple days ago, and started using it quite well. The VPN is good. Like, I enjoy using it,
+
+Unknown Speaker  57:41  
+but like,
+
+Unknown Speaker  57:44  
+over ID, now I haven't earned any points. Is there something I'm supposed to activate?
+
+Unknown Speaker  57:50  
+I don't Yeah,
+
+Brien Colwell  57:52  
+yeah. So okay, so let me clarify today what's going on. So basically, you earn points when people on the network route their data through through your location, right? So they most of the points are being allocated in the US and Europe, because that's where most people are routing their data. Now, now we're tweaking this a little bit like we're refining the points model, so we're going to add a new category of points. So so so today, if you look at your points, you have your data points from from how much data you've routed, you also have your referral points. And so that's basically, you know, how when you refer people, you earn points on how much they earn, as well as on their referrals, etc. So it's like a, you know, a recursive like earning on referrals.
+
+We're adding another point system in the next release, where we're adding what's called reliability points. So if you just stay online in your region, you're going to get boosted. So if you're like, if you're one of the first 30 people to come online in the country, or stay online in the country, you're just going to get a you're going to get a points boost. You're boost. So
+
+addition to just being online, everyone's going to get some some points just for staying online. So so
+
+that's one thing I want to mention, is we're tweaking the formula a little bit. Because if you're in a country that's not the US or Europe, we noticed the point, like a lot of people in other countries aren't earning a lot of points right now, so we want to, we want to tweak that, because we want to be in every single country, you know, we want to have nodes in every single country. So we got to tweak that a little bit. And so we're going to do that. The other thing I want to say is, you got to be on Wi Fi to earn points. So basically, today,
+
+if you're connected and on Wi Fi, you can earn, but if you're on cell network, you currently don't earn, and that's because we didn't want to, like, exhaust your data plan. So in the next release, we've actually added an option where you can basically, or.
+
+And points on cell network as well, and so, so that's coming naturally. So yeah, we've gotten a lot of feedback from this release and and we're making some improvements. We, you know, we apologize that we didn't get it totally right with our with our initial points release, but we're, we're working on the biggest, I think, with the biggest issues, those two issues, I said, like, you're going to get points just for being on the network, and you're going to be able to get points from cell network. So, so, yeah, we're trying to fix that in the next release. And what I encourage you to do is join our Discord and just like, you know, chat with us, because we have a forum there and we're tracking a bunch of issues there, so we're, like, actively working on this feedback from the community. So, so yeah, join discord, and yeah, we'll make sure you get your points. We're going to work this out. So yeah, I just apologize that if you're not in the US or Europe, it's it hasn't been the smoothest ride so far.
+
+Unknown Speaker  1:00:56  
+I appreciate that question. Astro, you can unmute if you have another one. That was a good question.
+
+Unknown Speaker  1:01:04  
+No, that's all I got for now. That's all I got for now. I will join the discord. Well,
+
+Unknown Speaker  1:01:09  
+all right, buddy. I appreciate you being here. Thank you. Yeah, thank you. I got another request down here. I'm gonna turn them on. You.
+
+Unknown Speaker  1:01:23  
+Sigma,
+
+Unknown Speaker  1:01:33  
+I invited you. Sigma, can you see that invite?
+
+Unknown Speaker  1:01:49  
+All right, give
+
+Unknown Speaker  1:01:54  
+you another couple seconds if you want to join and ask the question,
+
+Unknown Speaker  1:01:58  
+sigma, I sent you the request to be a speaker, buddy.
+
+Brien Colwell  1:02:04  
+Yeah, it's that black mic. You gotta hit that black mic. That's, that's the key. It's been a lower left corner.
+
+Unknown Speaker  1:02:11  
+Oh, he disappeared too. That's so funny when you ask them if they want to ask the question, and they just back out.
+
+Brien Colwell  1:02:18  
+Yeah, yeah. I appreciate you doing this, Joshua, and last minute, I know, just for reference, I've, I had some personal stuff last week, so we couldn't do our we couldn't do a space with us plan. But I appreciate, yeah, no, it ended up working out. I ended up recording the podcast last Friday. So I worked out. Cool, cool, awesome. Well, yeah, no, I appreciate you taking the time and we're going to say goodbye to your VPN.
+
+Joshuwa  1:02:49  
+I appreciate you being here. Brian, thanks a lot, buddy. Thanks. Joshua, all right. Talk soon. Thank you. Thanks everyone. Thank you. Thanks everyone. Bye, bye. Thanks. Bye.
+
