@@ -179,7 +179,7 @@ docker run --mount type=bind,source=$HOME/.urnetwork,target=/root/.urnetwork bri
 To run the latest, most stable version, run the command below.
 
 ```
-docker run --mount type=bind,source=$HOME/.urnetwork,target=/root/.urnetwork bringyour/community-provider:g4-latest provide
+docker run --mount type=bind,source=$HOME/.urnetwork,target=/root/.urnetwork --restart always -d bringyour/community-provider:g4-latest provide
 ```
 
 You can adapt the commands from the section [To run a provider all the time in the background, follow the steps below](#to-run-a-provider-all-the-time-in-the-background-follow-the-steps-below) to use `docker run bringyour/community-provider:g4-latest --mount type=bind,source=$HOME/.urnetwork,target=/root/.urnetwork` instead of `/path/to/provider`.
