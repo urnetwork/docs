@@ -179,10 +179,10 @@ docker run --mount type=bind,source=$HOME/.urnetwork,target=/root/.urnetwork bri
 To run the latest, most stable version, run the command below.
 
 ```
-docker run --mount type=bind,source=$HOME/.urnetwork,target=/root/.urnetwork --restart always -d bringyour/community-provider:g4-latest provide
+docker run --mount type=bind,source=$HOME/.urnetwork,target=/root/.urnetwork --restart no -d bringyour/community-provider:g4-latest provide
 ```
 
-You can adapt the commands from the section [To run a provider all the time in the background, follow the steps below](#to-run-a-provider-all-the-time-in-the-background-follow-the-steps-below) to use `docker run bringyour/community-provider:g4-latest --mount type=bind,source=$HOME/.urnetwork,target=/root/.urnetwork` instead of `/path/to/provider`.
+If you want to run the provider in the background all the time, even if your machine reboots, simply change the `--restart no` to `--restart always`.
 
 To update your provider, just run `docker pull bringyour/community-provider:g4-latest` . A new g4 is published about once a month. You can [see the changelogs in the releases section of the Github repo](https://github.com/urnetwork/connect).
 
