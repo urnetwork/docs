@@ -1,6 +1,6 @@
 
 
-# Warrant canary
+# Warrant Canary
 
 The existence of this page confirms:
 
