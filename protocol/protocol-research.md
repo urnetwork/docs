@@ -39,8 +39,14 @@ The URnetwork team would like to allow users to opt-into experimental algorithms
 
 | | Points/Token allocation |
 |---|---|
-| Current algorithm | UR-PSUB2 ([account_payout_model_plan.go](https://github.com/urnetwork/server/blob/main/model/account_payment_model_plan.go)). Points are allocated from a "subsidy" pool and distributed every 7 days proportional to data transfer "votes", reliability scores, and referrals. The data votes prioritize traffic generated from paid subscribers to  counteract gaming the totals. Multiplier bonuses are applied for certain reliability and community incentives. |
+| Current algorithm | UR-PSUB2 ([account_payout_model_plan.go](https://github.com/urnetwork/server/blob/main/model/account_payment_model_plan.go)) Points are allocated from a "subsidy" pool and distributed every 7 days proportional to data transfer "votes", reliability scores, and referrals. The data votes prioritize traffic generated from paid subscribers to  counteract gaming the totals. Multiplier bonuses are applied for certain reliability and community incentives. |
 | Data set | The inputs and outputs will be moved on chain as part of the tokenization effort. |
+
+
+| | Permission |
+|---|---|
+| Current algorithm | UR-CONTRACT ([subscription_model.go](https://github.com/urnetwork/server/blob/main/model/subscription_model.go)) Transfer between two parties (the initiator and the companion) requires a contract encrypted with the secret key of the destination client. The contract includes a fixed transfer balance held in escrow, and a permission set of the relation between the two parties. The companion can create contracts paired to the initiator for return traffic. Additionally multi-hop paths will send stream open and stream close events to intermediaries. Both the initiator and companion must close the contract after use with the acknowledged byte count. If either side does not close, or there is a disagreement, the contraction resolution process forces a result. If any side reports abuse, future transfer between the two parties is not allowed. |
+| Data set | Export of contracts and closure state to evaluate effeciveness of the permission system |
 
 
 | | Safety |
