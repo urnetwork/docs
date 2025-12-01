@@ -27,7 +27,7 @@ The URnetwork team would like to allow users to opt-into experimental algorithms
 
 | | Transfer |
 |---|---|
-| Current algorithm | UR-TRANSFER ([transfer.go](https://github.com/urnetwork/connect/blob/main/transfer.go)) A reliable transfer window tuned for high latency environments. Protocol retransmits into the transfer layer are disabled since the window has reliable delivery. Distributes traffic amongst available transports based on ranked performance and availability of the transport. |
+| Current algorithm | UR-TRANSFER ([transfer.go](https://github.com/urnetwork/connect/blob/main/transfer.go)) A reliable transfer window tuned for high latency environments. Protocol retransmits into the transfer layer are disabled since the window has reliable delivery. Distributes traffic among available transports based on ranked performance and availability of the transport. |
 | Data sets | This runs entirely on the client side and we currently  do not have an option for users to share traces with us (TODO) |
 
 
@@ -46,7 +46,7 @@ The URnetwork team would like to allow users to opt-into experimental algorithms
 | | Permission |
 |---|---|
 | Current algorithm | UR-CONTRACT ([subscription_model.go](https://github.com/urnetwork/server/blob/main/model/subscription_model.go)) Transfer between two parties (the initiator and the companion) requires a contract encrypted with the secret key of the destination client. The contract includes a fixed transfer balance held in escrow, and a permission set of the relation between the two parties. The companion can create contracts paired to the initiator for return traffic. Additionally multi-hop paths will send stream open and stream close events to intermediaries. Both the initiator and companion must close the contract after use with the acknowledged byte count. If either side does not close, or there is a disagreement, the contraction resolution process forces a result. If any side reports abuse, future transfer between the two parties is not allowed. |
-| Data set | Export of contracts and closure state to evaluate effeciveness of the permission system |
+| Data set | Export of contracts and closure state so that the raw transfer statistics and traffic flows in the network can be analyzed. |
 
 
 | | Safety |
