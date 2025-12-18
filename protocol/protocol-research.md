@@ -8,10 +8,20 @@ The payout block of the network is 7 days. The data is anonymized per block. All
 
 ## Note to researchers/builders
 
-The URnetwork team would like to allow users to opt-into experimental algorithms. We plan to keep this document up to the date with the current (default) algorithm along with experimental directions. For security research please follow the [Vulnerability Disclosure Program](https://ur.io/vdp). 
+The URnetwork team would like to allow users to opt-into experimental algorithms via federated network operators. New network operators will be able to participate in the common incentive system via root contracts to reward their providers. Providers can participate across as many network operators as they want. The main app will support the option to enter an alternate network operator domain for all users. See the [New Network Operator beta form]() to receive peering credentials and transfer allocation. We plan to keep this document up to the date with the current (default) algorithm along with experimental directions. For security research please follow the [Vulnerability Disclosure Program](https://ur.io/vdp).
 
 
 ## Problems
+
+| | Performance |
+|---|---|
+| Current algorithm | URTRANSPORT1 ([transport.go](https://github.com/urnetwork/connect/blob/main/transport.go) and [stream_manager.go](https://github.com/urnetwork/connect/blob/main/transfer_stream_manager.go)) The current approach is focused on accessibility, so that every person in the world can connect. Multi-hop routing is done via TCP transports through a central hop. UDP transports (H3, DNS) are supported but disabled due to real world performance issues in our setup (to be resolved). There is a multi-provider hop with peer-to-peer upgrade called stream that is supported but currently disabled. The goal is to integrate tried and try protocols (WebRTC, XRay, WireGuard) as the stream upgrade. There are two cases to optimize: 1. the next hop does not have a public ip:port, and 2. the next hop does have a public ip:port. We may want to add meta data to the matching algorithm to allow selecting hops with case 2 (speed), or 1+2 (quality). |
+| Data sets | This algorithm is most measurable by raw speed and latency tests |
+
+| | Accessibility |
+|---|---|
+| Current algorithm | UREXTENDER1 ([net_extender.go](https://github.com/urnetwork/connect/blob/main/net_extender.go)) The core network stack (the non-stream transport) supports a N-TLS (N>=2) encryption where each outer encryption uses a self-signed cert for any host name (SNI spoofing) to an intermediary IP, which forwards to either another hop or an end-to-end TLS connection to the network operator domain. Anyone can host an extender on whatever domain they want. All users from a single extender share a common rate limit which may be adjusted on a per-case basis. Extenders get added to a grant list in the protocol, which allocates a percentage of the incentive to all extenders. The [Extender Network beta form]() is the first step to get added to the grant list. The will be able to enter the first hop extender IP and choose a host name in the app (TODO) |
+| Data sets | We do not plan on collecting data of extender usage |
 
 | | Matching clients to providers |
 |---|---|
