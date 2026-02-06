@@ -1,0 +1,45 @@
+# URnetwork
+
+> URnetwork is a decentralized VPN where egress capacity is provided by anyone who wants to participate in the network. It is built on peer-to-peer web standards with end-to-end TLS encryption, a contract-based economic model, and trust-and-safety defaults that keep providers safe. The main network space is operated by BringYour, Inc.
+
+URnetwork connects users to a global network of egress providers — access points to localized internets around the world. Traffic from the network is designed to be indistinguishable from normal internet traffic. The network is free to use with a data cap; users can become a supporter for a higher data cap and priority speeds.
+
+The API lives at `https://api.bringyour.com`. The connect protocol server is at `connect.bringyour.com`. The public extender server is at `extender.bringyour.com`.
+
+Key repositories: [connect](https://github.com/urnetwork/connect), [server](https://github.com/urnetwork/server), [protocol](https://github.com/urnetwork/protocol), [sdk](https://github.com/urnetwork/sdk), [docs](https://github.com/urnetwork/docs).
+
+## Core Documentation
+
+- [Provider Guide](https://docs.ur.io/provider): How to become a provider using apps, binaries (Linux/Windows/macOS), or Docker containers. Covers authentication, setup, background running, and multi-platform builds.
+- [API Getting Started](https://docs.ur.io/api): Authentication with admin and client JWTs, auth code flow, and API base URL.
+- [API Reference](https://docs.ur.io/api/api-reference): Full endpoint reference including auth, network, providers, wallets, subscriptions, devices, and feedback.
+- [Economic Model](https://docs.ur.io/economic-model/economic-model): Revenue model, subsidy payments (10% of premium revenue), referral bonuses, payout mechanics (USDC on Polygon or Solana), and company growth phases.
+- [CLI Tools](https://docs.ur.io/cli): Overview of provider, tether, bringyourctl, and warpctl command-line interfaces.
+
+## Protocol & Architecture
+
+- [Protocol Research](https://docs.ur.io/protocol/protocol-research): Detailed breakdown of all protocol algorithms — transport (URTRANSPORT1), accessibility/extenders (UREXTENDER1), client-provider matching (UR-FP2), multi-client management (UR-MULTI), transfer windows (UR-TRANSFER), IP egress stack (UR-IP), points/token allocation (UR-PSUB2), and contract permissions (UR-CONTRACT).
+- [Whitepaper](https://docs.ur.io/archive/whitepaper): Original BringYour whitepaper covering mission, business plan, protocol design, wallets, extenders, security model, contract disputes, identity, and validation.
+
+## Platform Guides
+
+- [Raspberry Pi](https://docs.ur.io/rpi): Running URnetwork on Raspberry Pi, integration with Pi-hole and PiVPN.
+- [Ubiquiti EdgeOS](https://docs.ur.io/edgeos): Running URnetwork on EdgeRouter devices (ER X, ER4).
+- [MikroTik RouterOS](https://docs.ur.io/routeros): Running URnetwork on hEX models (RB750).
+- [Router Testing Notes](https://docs.ur.io/router/testing-notes): Community notes on running the provider on various router hardware and architectures.
+
+## Trust, Safety & Legal
+
+- [Trust and Safety Policy](https://docs.ur.io/trust-and-safety/trust-and-safety): Default-safe process with frontline protocol/economic incentives (port blocking, rate limits, contract priority) and backline encrypted audit log for abuse response.
+- [Warrant Canary](https://docs.ur.io/trust-and-safety/warrant-canary): Confirms BringYour has never compromised encryption keys or installed law enforcement software.
+- [Transparency Report](https://docs.ur.io/trust-and-safety/transparency-report): Quarterly abuse report statistics and outcomes.
+- [Vulnerability Disclosure Policy](https://docs.ur.io/legal/vdp): How to report security vulnerabilities, safe harbor provisions.
+- [Privacy Policy](https://docs.ur.io/legal/privacy): Data collection practices, limited to email/phone, wallet addresses, and city/region/country.
+- [Terms of Service](https://docs.ur.io/legal/terms): Service agreement, license terms, lawful use requirements, liability limitations.
+
+## Optional
+
+- [Changelog: Update 1](https://docs.ur.io/changelog/2024-10-31-update-1/update-1): Rebrand to URnetwork, free tier launch, supporter subscriptions, Android TV support.
+- [Changelog: Tether/WireGuard Integration](https://docs.ur.io/changelog/2024-10-31-tether/tether): Technical deep-dive on integrating WireGuard into URnetwork with userspace implementation and CLI management.
+- [Changelog: Traffic Categorization](https://docs.ur.io/changelog/2024-10-31-inspect/inspect): On-device clustering approach for categorizing user traffic by application and third-party connections.
+- [Account Deletion](https://docs.ur.io/support/delete): How to delete your account from the app.

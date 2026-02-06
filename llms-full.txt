@@ -1,0 +1,2270 @@
+# URnetwork - Complete Documentation
+
+> URnetwork is a decentralized VPN where egress capacity is provided by anyone who wants to participate in the network. Built on peer-to-peer web standards with end-to-end TLS encryption. Operated by BringYour, Inc.
+>
+> Website: https://ur.io | Docs: https://docs.ur.io | API: https://api.bringyour.com | GitHub: https://github.com/urnetwork
+
+
+---
+source: README.md
+url: https://docs.ur.io
+---
+
+![URnetwork](res/ur.webp)
+
+# URnetwork docs
+
+Welcome to the URnetwork docs where we go into more details about how to hack and use the network.
+
+Many docs get refined in conversations [on our Discord](https://bringyour.com/discord). 
+
+PRs are welcome to the [docs on GitHub](https://github.com/urnetwork/docs).
+
+
+---
+source: provider/README.md
+url: https://docs.ur.io/provider
+---
+
+
+# URnetwork Providers
+
+URnetwork is a decentralized VPN where egress capacity is provided by anyone who wants to participate in the network, called a provider. A provider connects to a network space, which is a distributed set of servers that manage and faciliate the network using the URnetwork [API](https://docs.ur.io/api) and [connect protocol](https://github.com/urnetwork/protocol). Users authenticate with the network space to use the network for security, privacy, anonymity, and content acccess.
+
+The main URnetwork space follows a set of trust and safety rules and an economic model that keeps the network safe for providers, and rewards providers for participating. The network is free to use with a data cap, where users can become a supporter to get a higher data cap and priority speeds. The main URnetwork space supports email, SMS, Google, and Apple authentication.
+
+[Trust and Safety Policy](https://docs.ur.io/trust-and-safety/trust-and-safety)
+
+[Economic Model](https://docs.ur.io/economic-model/economic-model)
+
+
+## Provide using an app
+
+URnetwork builds apps for popular consumer platforms. Our goal is to support as much existing hardware as possible and make it "one tap" to get set up as a provider. When you install an app, select "Provide while disconnected" from the settings to enable always-on provider. Otherwise, the provider is only active while you are connected to the network.
+
+[URnetwork apps](https://ur.io/app)
+
+
+## Provide using a binary
+
+The `provider` binary compiles to run on Linux, Windows, macOS. For information on specific IoT and router platforms see [Raspberry Pi](https://docs.ur.io/rpi), [EdgeOS](https://docs.ur.io/edgeos), and [RouterOS](https://docs.ur.io/routeros).
+
+The binary runs as any user and does not require special permissions.
+
+The binary can be compiled and deployed from source, or deployed with our pre-built docker container. Both methods are documented below.
+
+
+### Provider binary
+
+#### Windows
+
+You can install the provider using the following command in your Command Prompt (cmd.exe) or PowerShell:
+
+```
+powershell -c "irm https://raw.githubusercontent.com/urnetwork/connect/refs/heads/main/scripts/Provider_Install_Win32.ps1 | iex"
+```
+
+In case if you wish to uninstall the provider, run the following:
+
+```
+powershell -c "irm https://raw.githubusercontent.com/urnetwork/connect/refs/heads/main/scripts/Provider_Uninstall_Win32.ps1 | iex"
+```
+
+#### Linux
+
+Run the following to install the provider:
+
+```bash
+curl -fSsL https://raw.githubusercontent.com/urnetwork/connect/refs/heads/main/scripts/Provider_Install_Linux.sh | sh
+```
+
+If you wish to uninstall it:
+
+```bash
+curl -fSsL https://raw.githubusercontent.com/urnetwork/connect/refs/heads/main/scripts/Provider_Uninstall_Linux.sh | sh
+```
+
+#### macOS
+
+You'll have to build the provider binary from source, as of now. Please refer to the next section.
+
+#### Build from source
+
+Run the following commands to build the `provider` binary from source. You will need `go` version of at least 1.23[^1] and `git`.
+
+```
+mkdir urnetwork
+cd urnetwork
+git clone https://github.com/urnetwork/connect
+git clone https://github.com/urnetwork/protocol
+cd connect/provider
+go build
+# the provider binary is now at ./provider
+```
+
+#### To initialize a provider on your network, follow the steps below.
+
+1. Log into your network in the [web UI](https://ur.io/?auth). You can create a new network here also.
+2. Once logged in, there is an button in the dialog called "Copy an Auth Code". Tap that button to copy a time-limited auth code. You'll use this in the next step to generate a local JWT file.
+3. `./provider auth`. Paste the auth code at the prompt to enter the auth code.
+4. You should see output that says "Saved auth to ~/.urnetwork/jwt". Now any provider that runs in your user will be authenticated to your network. You can copy the `$HOME/.urnetwork` dir to new environments to quickly set up the provider.
+
+#### To run a provider on your network, run the command below.
+
+```
+./provider provide
+# you should see the message "Provider XXX started"
+```
+
+This runs in the foreground and provides egress capacity to the network until killed. Payouts are made to the wallet set up in the network. You can use [one of the apps](https://ur.io/app) to set up your wallet.
+
+#### To run a provider all the time in the background, follow the steps below.
+
+*Linux*
+
+If you have `systemd`, then the installer script should have automatically configured a systemd service when you installed the provider. The service is `urnetwork`, so you can use the usual `systemctl` commands to control it:
+
+```bash
+systemctl --user start urnetwork    # Start
+systemctl --user stop urnetwork     # Stop
+systemctl --user enable urnetwork   # Start on login
+systemctl --user disable urnetwork  # Disable start on login
+```
+
+*macOS*
+
+On modern macOS, background processes are managed with `launchd` using the command `launchctl` while the logs get appended to `/var/log/system.log`. The following steps set up a basic launchd unit to run the provider binary using the configuration at `$HOME/.urnetwork`.
+
+1. Download the [latest launchd template from Github](https://github.com/urnetwork/connect/provider/launchd)
+2. Edit the `/path/to/provider` to the actual provider path
+3. Edit the `$USER` to the user you want to run as
+4. Make sure for that user, `$HOME/.urnetwork` is in place
+5. `sudo cp <EDITED urnetwork-provider.plist> /Library/LaunchAgents/urnetwork-provider.plist`
+6. `sudo launchctl load /Library/LaunchAgents/urnetwork-provider.plist`
+7. `sudo launchctl start /Library/LaunchAgents/urnetwork-provider.plist`
+8. Verify the unit is running with `tail -f /var/log/system.log | grep -i provider`. You should see the message "Running on port XX"
+9. You're all set!
+
+*Windows*
+
+When you run the installation script, it will ask you whether you want to add the provider program to system startup programs list. If you do, it will start in background when your system boots up.
+It is possible to run the provider manually in the background:
+
+```
+powershell -NoProfile -WindowStyle Hidden -Command "Start-Process urnetwork.exe -ArgumentList 'provide' -WindowStyle Hidden"
+```
+
+### Provider binary on multiple platforms
+
+If you want to build the binary for multiple platforms, use the Makefile.
+
+```
+mkdir urnetwork
+cd urnetwork
+git clone https://github.com/urnetwork/connect
+git clone https://github.com/urnetwork/protocol
+cd connect/provider
+go build
+# the provider binaries are compiled into binaries at ./build/$OS/$ARCH
+# build/darwin/amd64/provider
+# build/darwin/arm64/provider
+# build/linux/amd64/provider
+# build/linux/arm64/provider
+# build/linux/arm/provider
+# build/linux/386/provider
+# build/windows/amd64/provider
+# build/windows/arm64/provider
+```
+
+Choose the `provider` binary for your OS and architecture.
+
+Note: `darwin` is for macOS
+
+Note: if you have a modern Intel or AMD processor, choose `amd64`. If you have a modern Apple or Qualcomm processor, choose `arm64`. Otherwise for Linux IoT and router platforms, run `uname -m` to find your architecture.
+
+Note: you can download pre-built binaries from the [nightly releases](https://github.com/urnetwork/connect)
+
+### Provider container
+
+We publish an image for following the warp convention to make running an up-to-date provider easier. We continuously update the image with 4 service blocks, where the last block (`g4`) has been tested the longest and hence is the most stable.
+
+| Block | Latest |
+|-------|--------|
+| `g1` | [bringyour/community-provider:g1-latest](https://hub.docker.com/r/bringyour/community-provider) |
+| `g2` | [bringyour/community-provider:g2-latest](https://hub.docker.com/r/bringyour/community-provider) |
+| `g3` | [bringyour/community-provider:g3-latest](https://hub.docker.com/r/bringyour/community-provider) |
+| `g4` | [bringyour/community-provider:g4-latest](https://hub.docker.com/r/bringyour/community-provider) |
+
+
+Note: the images are built for amd64 and arm64 architectures only.
+
+To initialize with the latest, most stable version, run the command below.
+
+```
+docker run --mount type=bind,source=$HOME/.urnetwork,target=/root/.urnetwork bringyour/community-provider:g4-latest auth
+```
+
+To run the latest, most stable version, run the command below.
+
+```
+docker run --mount type=bind,source=$HOME/.urnetwork,target=/root/.urnetwork --restart no -d bringyour/community-provider:g4-latest provide
+```
+
+If you want to run the provider in the background all the time, even if your machine reboots, simply change the `--restart no` to `--restart always`.
+
+To update your provider, just run `docker pull bringyour/community-provider:g4-latest` . A new g4 is published about once a month. You can [see the changelogs in the releases section of the Github repo](https://github.com/urnetwork/connect).
+
+
+## Main Network Space
+
+The main URnetwork space is below. Anyone can host a network space by deploying and maintaining the services in the server repo. The main network space is continuously deployed with the warp tools, where the continuous versions are committed as tags on GitHub for transparency.
+
+| Server Name | Purpose |
+|-------------|---------|
+| api.bringyour.com | API server |
+| connect.bringyour.com | Connect protocol server |
+| extender.bringyour.com | Public extender server. Users can run their own extenders in a secure location to have their own IP to access the network, which is benefitial for some network access situations. |
+
+The provider tools use the main network space by default.
+
+
+[^1]: [Download and install Go](https://go.dev/doc/install)
+
+
+---
+source: economic-model/economic-model.md
+url: https://docs.ur.io/economic-model/economic-model
+---
+
+# Economic model
+
+BringYour earns revenue from user premium subscriptions. We build and operate the protocol that connects users to a global network of egress providers, which are access points to localized internets all around the world. Our goal is to have the largest network of egress providers, so that traffic from our network is indistinguishable from normal internet traffic. We designed our economic model to both 1. reward people who help run and grow the network, and 2. build a great business.
+
+Because the number of egress providers grows with the number of users, our data center costs are almost fixed. We're able to offer access for free because, simply, you’ve earned it by participating in the network to provide security and privacy to other users. This is a completely new design that lets us build a free, fast, private VPN in a transparent and ethical way.
+
+Traditional VPNs need to spend money on bandwidth and operations. To pay for this, traditional free VPNs monetize their users - your data, ads, scraping, malware, botnets. Because in our network users run the egress providers and trade bandwidth with each other, we do not have to spend money on bandwidth and operations. Instead we spend money on building the protocol, automated processes, and simple apps to scale the network.
+
+We’re focused on making the network safe, scalable, and fast. We’re continually improving our protocol to thrive in the realities of the global internet. We're also focused on premium features that matter to you, like private sharing, third-party blocking, anti-censorship, and data management. Because we charge a small subscription for premium, we're able to spend more on bandwidth and servers for our premium users.
+
+We see a future where a significant portion of internet users switch away from sketchy traditional VPNs to us, because we work better, more private, and cheaper. It’s important that we have an economic model that rewards the community and leads to a great business as we scale. If we didn't have a realistic model that leads to a great business at scale, one could conclude we also plan to monetize our users. For this reason we want to be transparent with our economic model.
+
+Our current model factors in three components:
+- Paid transfer (the old way)
+- Subsidized transfer (the new way)
+- Referral bonuses
+
+Note that with subsidized transfer, paid transfer trends to zero. We keep it in the model since that was the operation of the network from public beta launch in H1 2024 to “v0” launch in H2 2024.
+
+
+## Payments to the community
+
+We set our subsidy payment as 10% of premium revenue with a guaranteed minimum amount of $.1 per MAU. MAU does not include automation and bots. The payout amount per device is determined by the amount of data routed, weighted 75% against all global devices and 25% against devices in the same country, where all countries are weighted equally [^1]. The guaranteed minimum amount will adjust every year after launch.
+
+We set our referral bonus as 50% of the earnings of the referred user and 50% of their referral bonus.
+
+This means that we’re paying out up to 20% of our premium revenue back to the community, with a minimum amount up to $.2 per MAU.
+
+This also means that we’re targeting margins between 70-80% at scale, which is where we want to be as a business. This is competitive in the market and allows us to run as an independent company.
+
+The revenue share of paid transfer is 50%. However, the amount of paid traffic trends to zero after our launch in H2 2024.
+
+The payouts to the community are sent to each network’s active wallet, as USDC, either on Polygon or Solana. The active wallet is managed in the app, and a default user-controlled wallet can be created directly in the app.
+
+Payouts to the active wallet subtract the gas fee from the payout. The payout is held and combined with future payouts until the value minus the gas fee is positive.
+
+There is no cost to participate as a provider.
+
+
+## Phases of the company
+
+The launch of the network and community payments creates four phases of the company:
+
+0. Repeatable network
+1. Repeatable premium product
+2. Scale
+3. Profitable company
+
+In phase 0, we will focus on a network that is better than other consumer VPNs, and scaling the network in a cost efficient way. The exit is a scalable network with almost fixed operating costs.
+
+In phase 1, the premium revenue is not enough to subsidize the community payments. We’ll be in this phase as long as premium conversion per MAU is less than .2/premium price [^2]. At our current premium price of $5/month, the break-even exit of phase 1 is at 4% conversion of users to premium users. In this phase the company will focus on a repeatable premium offering that converts above the break-even rate to exit.
+
+In phase 2, the company can scale revenue with an almost fixed operating cost by scaling MAU. The company will scale faster if the conversion to premium is higher than the break-even. In this phase the company will focus on volume to cover operating costs and exit.
+
+In phase 3, the company will be profitable as it scales. At this point we will look at expanding our TAM with new premium products starting at phase 1.
+
+
+## Payout sweep
+
+Payouts are done weekly and the subsidy is computed from the previous week’s revenue and the previous month’s MAU.
+
+
+## Privacy
+
+Payment on our network is private.
+
+Transfer between a user and provider is preceded by a contract. A contract combines payment information, access control, and priority so that a user and provider can directly communicate and apply the right rules. Both user and provider close a contract, and if they agree, the contract is settled and added to the payout.
+
+Settled contracts used for a payout are removed one week after the payout. This is in line with our approach of aggressively deleting user information from our system. If there are any issues with a payout, participants must contact us within one week. 
+
+
+[^1]: As a formula, the subsidized payout to a single provider is `0.75 * sum(all contracts serviced by provider)/sum(all contracts) + (0.25 / NumberOfCountries) * sum(all contracts serviced by provider)/sum(all contracts in provider's country)`
+
+[^2]: `PremiumPrice/month * PremiumConversion * MAU = .2 * MAU/month`
+
+
+---
+source: cli/README.md
+url: https://docs.ur.io/cli
+---
+
+
+# Command Line Interface
+
+The following CLIs are maintained for URnetwork
+
+## provider
+
+[See the provider docs]()
+
+The provider CLI runs and manages a local egress provider.
+
+
+## tether
+
+[See the tether docs]()
+
+The tether CLI runs and manages network interfaces and protocol servers. Anything packet routing from your OS to URnetwork will use this CLI.
+
+
+## bringyourctl
+
+The bringyourctl CLI manages your own network space deployment.
+
+
+## warpctl
+
+The warpctl CLI manages continuous deployment into your own network space.
+
+
+
+
+
+
+
+
+
+
+
+---
+source: protocol/protocol-research.md
+url: https://docs.ur.io/protocol/protocol-research
+---
+
+# Protocol Research
+
+The [URnetwork protocol](https://ur.io/protocol) can be run by any network operator. The protocol is a decentralized-native, multi-IP, multi-transport protocol (as opposed to a traditional site-to-site tunnel protocol). The goal is to scale to a network of millions of providers per network operator and deliver a best-in-class experience. The "Layer 2" design allows the most sensitive data to be private. However, for transparency and research, anonymized exports of the problem space inputs and outputs are made available. 
+
+## Anonymization technique 
+
+The payout block of the network is 7 days. The data is anonymized per block. All client ids and IP subnet hashes are replaced with simple integer counter values. Additionally city meta data is not included.
+
+## Note to researchers/builders
+
+The URnetwork team would like to allow users to opt-into experimental algorithms via federated network operators. New network operators will be able to participate in the common incentive system via root contracts to reward their providers. Providers can participate across as many network operators as they want. The main app will support the option to enter an alternate network operator domain for all users. See the [New Network Operator beta form]() to receive peering credentials and transfer allocation. We plan to keep this document up to the date with the current (default) algorithm along with experimental directions. For security research please follow the [Vulnerability Disclosure Program](https://ur.io/vdp).
+
+
+## Problems
+
+| | Performance |
+|---|---|
+| Current algorithm | URTRANSPORT1 ([transport.go](https://github.com/urnetwork/connect/blob/main/transport.go) and [stream_manager.go](https://github.com/urnetwork/connect/blob/main/transfer_stream_manager.go)) The current approach is focused on accessibility, so that every person in the world can connect. Multi-hop routing is done via TCP transports through a central hop. UDP transports (H3, DNS) are supported but disabled due to real world performance issues in our setup (to be resolved). There is a multi-provider hop with peer-to-peer upgrade called stream that is supported but currently disabled. The goal is to integrate tried and try protocols (WebRTC, XRay, WireGuard) as the stream upgrade. There are two cases to optimize: 1. the next hop does not have a public ip:port, and 2. the next hop does have a public ip:port. We may want to add meta data to the matching algorithm to allow selecting hops with case 2 (speed), or 1+2 (quality). |
+| Data sets | This algorithm is most measurable by raw speed and latency tests |
+
+| | Accessibility |
+|---|---|
+| Current algorithm | UREXTENDER1 ([net_extender.go](https://github.com/urnetwork/connect/blob/main/net_extender.go)) The core network stack (the non-stream transport) supports a N-TLS (N>=2) encryption where each outer encryption uses a self-signed cert for any host name (SNI spoofing) to an intermediary IP, which forwards to either another hop or an end-to-end TLS connection to the network operator domain. Anyone can host an extender on whatever domain they want. All users from a single extender share a common rate limit which may be adjusted on a per-case basis. Extenders get added to a grant list in the protocol, which allocates a percentage of the incentive to all extenders. The [Extender Network beta form]() is the first step to get added to the grant list. The will be able to enter the first hop extender IP and choose a host name in the app (TODO) |
+| Data sets | We do not plan on collecting data of extender usage |
+
+| | Matching clients to providers |
+|---|---|
+| Current algorithm | UR-FP2 ([network_client_location_model.go#FindProviders2](https://github.com/urnetwork/server/blob/main/model/network_client_location_model.go#L2708)) A sampling algorithm that loads a 10x random sample of potential providers from memory and shuffles it proportion to `reliability * client score` to a list of finalist. The fairness of the shuffle versus provider aliasing (Sybil attack) is guaranteed by the property of `sum(reliability) <= 1` per IP subnet. |
+| Data sets | Traces of every function call including inputs and selected outputs are here (TODO) |
+
+
+| | Multi client |
+|---|---|
+| Current algorithm | UR-MULTI ([ip_remote_multi_client.go](https://github.com/urnetwork/connect/blob/main/ip_remote_multi_client.go)) A heuristic sweep based algorithm to manage a window of providers. Locks traffic into providers of the top available tier. Based on transfer-thresholds and not protocol analysis. |
+| Data sets | This runs entirely on the client side and we currently  do not have an option for users to share traces with us (TODO) |
+
+
+| | Transfer |
+|---|---|
+| Current algorithm | UR-TRANSFER ([transfer.go](https://github.com/urnetwork/connect/blob/main/transfer.go)) A reliable transfer window tuned for high latency environments. Protocol retransmits into the transfer layer are disabled since the window has reliable delivery. Distributes traffic among available transports based on ranked performance and availability of the transport. |
+| Data sets | This runs entirely on the client side and we currently  do not have an option for users to share traces with us (TODO) |
+
+
+| | IP Egress |
+|---|---|
+| Current algorithm | UR-IP ([ip.go](https://github.com/urnetwork/connect/blob/main/ip.go)) An implementation of an IP stack that runs in minimal memory. Assumes the communicate to the peer is reliable via transfer, and hence retransmits are optimized. |
+| Data set | This runs entirely on the client side and we currently  do not have an option for users to share traces with us (TODO) |
+
+
+| | Points/Token allocation |
+|---|---|
+| Current algorithm | UR-PSUB2 ([account_payout_model_plan.go](https://github.com/urnetwork/server/blob/main/model/account_payment_model_plan.go)) Points are allocated from a "subsidy" pool and distributed every 7 days proportional to data transfer "votes", reliability scores, and referrals. The data votes prioritize traffic generated from paid subscribers to  counteract gaming the totals. Multiplier bonuses are applied for certain reliability and community incentives. |
+| Data set | The inputs and outputs will be moved on chain as part of the tokenization effort. |
+
+
+| | Permission |
+|---|---|
+| Current algorithm | UR-CONTRACT ([subscription_model.go](https://github.com/urnetwork/server/blob/main/model/subscription_model.go)) Transfer between two parties (the initiator and the companion) requires a contract encrypted with the secret key of the destination client. The contract includes a fixed transfer balance held in escrow, and a permission set of the relation between the two parties. The companion can create contracts paired to the initiator for return traffic. Additionally multi-hop paths will send stream open and stream close events to intermediaries. Both the initiator and companion must close the contract after use with the acknowledged byte count. If either side does not close, or there is a disagreement, the contraction resolution process forces a result. If any side reports abuse, future transfer between the two parties is not allowed. |
+| Data set | Export of contracts and closure state so that the raw transfer statistics and traffic flows in the network can be analyzed. |
+
+
+| | Safety |
+|---|---|
+| Current algorithm | UR-SEC1 ([ip_security.go](https://github.com/urnetwork/connect/blob/main/ip_security.go)) Port block list and IP block list. Does not do protocol inspection. |
+| Data set | This runs entirely on the client side and we currently  do not have an option for users to share traces with us (TODO) |
+
+
+
+ 
+
+
+---
+source: archive/whitepaper.md
+url: https://docs.ur.io/archive/whitepaper
+---
+
+
+# BringYour White Paper [very rough draft]
+
+| Version | Change notes |
+|---------|--------------|
+| Version 1 | Initial draft |
+
+| Resource | URL |
+|----------|-----|
+| Website | [bringyour.com](https://bringyour.com) |
+| Admin | iOS, Android |
+| Network identities | <code>you.bringyour.network</code> globally unique IPv6 subnet |
+
+Aliases not used today but may be used in the future:
+- (World Wide Access) ww.dev
+- vpn.dev
+
+
+## Mission
+
+Be the fastest way to solve network security and privacy needs for all people.
+
+- Connect people and services globally with a peer-to-peer network that co-mingles normal web traffic with secure transport. Work across international boundaries and regional restrictions.
+- Give visibility and control on the digital footprint of your data: where it goes, what it is, what it means, actions to limit or stop.
+- Allow seamless collaboration of networks and identity.
+
+
+## Business plan
+
+
+BringYour is an overlay ISP that adds security and privacy value to network usage. The business model is pay per use (GiB transfer), with an emphasis on web standards and peer to peer to keep fixed costs low, and a freemium core. The technology is build with a secure core managed by the company that manages users, contracts, payment, and the network; and extenders that handle peer to peer and provide additional IPs and hostnames. All peer to peer traffic is secured end to end with TLS hence the extenders can facilitate the traffic without eavesdropping.
+
+There are many underutilized network resources today. BringYour will help make those more efficiently used to delivery value among people.
+
+BringYour is built on a network to facilitate web standard end to end encryption between:
+- endpoint to endpoint
+- endpoint to subnet
+- subnet to endpoint
+- subnet to subnet
+
+Product development is to start with consumer mobile devices, and then expand into prosumer and business networks. The product roadmap is:
+
+Phase 1 Consumer: decentralized VPN with distributed providers and extenders, to compete in the same segment as the top VPN apps on the app stores, etc. Uses excess network capacity of people which gives the most realistic egress and extensive reach. Build on peer to peer web standards that also allows freemium sharing with self, friends and family. e.g. share your network with self and family. Packet inspection on each packet sent and API allows visibility and control of data. Administered from a mobile app with emphasis on speed of setup and ease of use.
+
+Phase 2 Pro: add additional device suppport and features relevant to prosumers and business use cases. Example features are access control management and super peer. Super peer exposes endpoints and subnets from a host to self, friends, and family. This focuses on prosumer and smb use cases like local servers, smart home and iot devices. Key innovation is to transparently map a local subnet to a peer to peer connection from user to host to the resource, and to maintain a directory of resources per user. Example additional devices are desktop, router, and key open source integrations.
+
+Phase 3 B2B: focus on business networks that use peer to peer routing to make connections to endpoints as fast as possible. Focus on SSO, SOC2, ease of setup, and interconnectivity and compliance use cases. Be the Slack of networks. 
+
+Phase 1 Pricing:
+
+Beat low usage cost versus popular consumer VPNs ($10/month)
+
+The standard pay per use price is $.1 per gb. The monthly revenue for different levels of sustained transfer are below:
+
+A typical 4k video stream is 20mbps. A typical user watches 4k video 0.5-2 hours per week. 1 hour of 4k video costs $.9
+
+100mbps $3.2k
+1gbps $32k
+2.5gbps $83k ($1m arr)
+10gbps $324k
+
+
+The total data transferred per month on the internet in 2016 is estimated around 100 exabytes (0.000308641975312ebps or 308640gbps) [https://en.m.wikipedia.org/wiki/Zettabyte_Era]   
+
+A contract is for 4gb of data ($.4). Bring Your must process around 11k contracts per hour per 10gbps assuming a contract is on average 10% filled.
+
+The MVP of BringYour is to deliver a faster, cheaper, more capabable consumer VPN experience than exists today.
+
+
+## Overview
+
+Local internet egress is a popular feature with many use cases [^1]. Typically this is served by a trusted party who provides in (supposed) confidence. The goal of this project is to enable an efficient market to provide local internet egress using modern web standards, while maximizing choice for speed and anonymity. This will allow more efficient usage of excess capacity that exsits in bandwidth allocation. It may also help to anonymize traffic for servers to the ISP by adding noise to a bandwidth allocation. WebRTC gives the user control to choose between speed (peer to peer) and their own trusted confidential parties (TURN servers).
+
+This market is built on a common protocol described in the protocol section. The protocol connects a currency contract for data transfer with a provider to a peer to peer connection to enable the data transfer, including closing the contract and disputes.
+
+The market is a layer 2 network that spans potentially several layer 1 blockchains. Each contract on the market enables data transfer between a user (client) and service provider (server). The contract reserves a market price of a currency for the maximum contract GiB value from a market wallet into an escrow wallet to ensure that, when closed, each contract can be fully paid. The transfer into the market wallet may incur a network fee and an exchange fee. The fees and rates are exposed in the market stats API, and all transaction on the market can reference a fixed market stat to ensure price transparency.
+
+For example, the network sets 1GiB of transfer at $0.20 with a network fee of 5%. A user sends 1XCH to their transfer wallet, 0.05XCH is taken by the market as a fee, and 0.95XCH is deposited into their market wallet. Each contract moves XCH from the market wallet into the escrow wallet equal to a market rate, (contract GiB value * $0.20)/(current dollar exchange of XCH). The value reserved in escrow is called the escrow value of the contract. When the contract closes, the agreed consumed prorated escrow value is transferred to the service provider and the rest returned to the market wallet, or a dispute is initiated following the dispute process described in the dispute section.
+
+As soon as a contract is closed, the respective balances are updated and the contract meta data is deleted. The network retains no historical record of past contracts.
+
+
+## Extenders
+
+BringYour is built on end to end encryption between:
+- endpoint to endpoint
+- endpoint to subnet
+- subnet to endpoint
+- subnet to subnet
+
+Extenders facilitate the end to end connection as either a peer to peer connection or a tunneled connection.
+
+Peer to peer traffic may need turn servers and/or protocol translation to facilitate in different network environments. Additionally a decentralized network benefits from additional ips and/or hostnames. The security model of extenders is TLS, where clients only trust the core apis with certificates from Bring Your, and peer to peer traffic is always encrypted end to end with TLS.
+
+There are two types of extenders: ip and url. 
+
+IP extenders sit on a public IP and relay https/wss api traffic to api.bringyour.com. The identity of the extender is the public ip. Additionally they facilitate peer to peer traffic.
+
+Url extenders sit on a public web server and do a wrapped tls relay of traffic from some path to api.bringyour.com. For example, https://foobar.com/bringyour would use the wrapped tls protocol to connect to api.bringyour.com and identify itself as the extender. Additionally they facilitate peer to peer traffic from a hostname, foobar.com .
+
+An extender must be registered with a user (user.bringyour.network). Also an extender must open incoming tcp traffic to port 443 and tcp and udp traffic to the peer to peer ports.
+
+An extender can also run as a free extender, which will allow facilitating non-paid traffic. Users have an option to choose free extenders. By default the client will choose free extenders when there is no remaining balance, and choose paid extenders otherwise.
+
+When a client connects to Bring Your, it must first choose an extender. The extended can be set manually to a known good extended. Otherwise this is done via the "find closest extender" api route, using the root api route. The root api route is api.bringyour.com by default, but it can be changed to use a known good extended for example. The client will typically maintain a list of N good extenders, and switch between them as needed.
+
+
+## Joining
+
+Becoming a user or service provider on the market is tied to creating a VPN connection. The WW VPN uses an ECDA key pair for identity management, by default stored on per computer user at ~/.ww/key or in the local secure storage for the application.
+
+Joining the network starts by creating a root account, which is associated with a network (you.bringyour.network). The root account and additional user accounts are managed with standard SSO (Apple, Google), email+password, and MFA.
+
+Additional users and devices can be added through a secret phrase process. A candidate will generate a secret phrase with the API associated with their local key, and share that secret phrase with a root account user. The root account enters the secret phase to associate the key with the account.
+
+All administration is done via the admin portals on web, iOS, and Android.
+
+
+## Wallets
+
+Each user of the market has four wallets per layer 1 blockchain: 
+
+1. Transfer wallet
+2. Market wallet
+3. Escrow wallet
+4. Dispute wallet
+
+The only real wallet address on the blockchain will is the transfer wallet. The currency will be held there until settlement or transfer out. The other wallets are maintained as part of the layer 2 meta data to enable fast contract handling and reduce blockchain fees.
+
+Currency are put into the transfer wallet either by direct transfer from the blockchain or ACH purchase. In direct transfer currency minus network fees are moved into the market wallet. ACH purchases exchange dollar to currency at the market rate and put currency into the market wallet minus network fees and exchange fees. Currency can be transferred out of the market wallet using the set transfer API, which may incur a blockchain fee. 
+
+The sum of tokens across all users of `(market wallet + market transfers out + escrow wallet + dispute wallet)` remains constant during usage of the market. No fees are applied during usage of the market. 
+
+
+## Protocol
+
+Communication to the platform is via HTTPS. Communication to peer is via WebRTC data channel. Data transfer follows the QUIC protocol where the transmit buffered is indexed, and the frame of transfer is a message. Messages in the buffer are processed in order of acknowledged index.
+
+The reference for the peer to peer transfer protocol is the WW vpn project, which has implementations in Go.
+
+The client maintains a list of servers identified by public key. The arbiter of the protocol is the API. For any number, client requests a new contract with the server. The arbiter may deny the request for any reason (insufficient funds, ban, etc). On success, the arbiter returns a signed contract Id using the secret from the server session. If not already connected, client initializes an ice connect via the arbiter using the public key. The arbiter may deny the ice connect if there are no active contracts between parties. Client maintains a peer connection with message buffer. The first message is start contract with the signed contract id. The client sends messages until contract expires or done. Client sends an end contract message. Client send arbiter a close contract with the stats. Only one open contract per connection is allowed.
+
+[Ice connect shares public key of client to server. Can ban public key at any time.￼]
+
+The client must send a open contract message before starting transfer on a contract. The client must end a contract before reaching a transfer exception in the contract, such as exceeded data. The client sends the close contract stats to the API and also a close contract message to the server. When the server receives the close contract message, it sends close contract stats to the API. The server may keep the data channel open and will expect a new open contract message before transfer.
+
+The protocol supports IPv4 and IPv6. If IPv4 or IPv6 is not routable on the server, data transfer will still be charged. The arbiter may track servers by the amount of data left unused on contracts to find routing errors. Future extensions may allow the API to surface these quality rankings.
+
+
+
+## Security
+
+Only public networks are allowed as destinations. Sending data to addresses in private networks is not allowed. Attempting to send to an address in a private network will result in an immediate close of the contract with a dispute status of malicious client. Correct server code will enforce this, and correct client code will filter traffic to private networks on the client side.
+
+Listing of private networks for IPv4 and IPv6 are below.
+
+
+### IPv4
+
+| IPv4 Private Subnet [^2] | Description |
+|---------------------|-------------|
+| 0.0.0.0/8 | |
+| 10.0.0.0/8 | |
+| 127.0.0.0/8 | |
+| 169.254.0.0/16 | |
+| 172.16.0.0/12 | |
+| 192.0.0.0/24 | |
+| 192.0.2.0/24 | |
+| 192.88.99.0/24 | |
+| 192.168.0.0/16 | |
+| 198.18.0.0/15 | |
+| 198.51.100.0/24 | |
+| 203.0.113.0/24 | |
+| 224.0.0.0/4 | |
+| 240.0.0.0/4 | |
+| 255.255.255.255 | |
+
+[^2]: https://datatracker.ietf.org/doc/html/rfc5735
+
+
+### IPv6
+
+| IPv6 Private Subnet [^3] [^4] | Description |
+|---------------------|-------------|
+| fc00::/7 | |
+| ::/128 | |
+| ::1/128 | |
+| ff00::/8 | |
+| fe80::/10 | |
+
+[^3]: https://datatracker.ietf.org/doc/html/rfc4193
+[^4]: https://datatracker.ietf.org/doc/html/rfc4291
+
+
+
+
+
+
+
+
+## Contract Disputes
+
+The WW arbiter connects client to server with a maximum transfer (value) for each contract. The value of the contract is locked in the escrow where only the used portion of the contract is transferred from client to server. At the end of the contract, the client and server both send a summary to the arbiter of the contract according to the contract protocol. Typically a contract is a small value, and the client automatically negotiates follow on contracts as needed. A dispute happens if at the end of the contract the client and server send a different summary to the arbiter.
+
+A dispute can happen for several (non exclusive) reasons:
+
+- a malicious client
+- a malicious server
+- a client does not follow the protocol (disappear)
+- a server does not follow the protocol (disappear)
+- technical errors in either the client or server that are not the fault of either
+
+The design of disputes deters repeated abuse by removing the incentives from each of these cases. In a dispute, the value of the contract remains locked in dispute escrow and registered as a dispute in both the client and server wallets. The server is not paid for any transferred data. No further contracts between a client and server are allowed while a dispute is active between them.
+
+A dispute resolution process assesses the pending disputes on a regular basis, and makes a decision:
+
+- was it a malicious client
+- was it a malicious server
+- client did not follow protocol
+- server did not follow protocol
+- was it a technical error and no fault
+
+If a malicious client, the client is permanently banned from the network and the escrow amount is released to the server. If a malicious server, the server is permanently banned from the network and the escrow amount is released to the client. If it was no fault, the value reported by the server is is deducted from the escrow account and released to the server, and the remaining value (if any) is released to the client.
+
+
+
+# Identity
+
+Joining the network gives you an identity on the network. Inter-network routing maintains exposes the identity of the sender. The identity is known as a network name, `you.bringyour.network`.
+
+
+# Service provider accounts payable
+
+BringYour is  a saas product. It sells gib transfer on a metered pay as you go package based on $ per gib. These are stored in a balance of gbio per account. 
+
+Customers can pay using dollars (stripe, Apple Pay, android pay, etc) or crypto (xch or sol). Wwa maintains a balance per customer in gib available backed by a blend of assets - $ and crypto. The current available gib is given based on the blend and current market prices. Transfer out of the assets is not allowed however in the future it may be possible to transfer out or in a by a gibio coin.
+
+When making transfer contracts on the network, the payout depends on the backing asset. For $ backing a credit is added to the vendor for each context based on gib value. For crypto asset the value at the time of contract is converted to gib and that amount is credited.
+
+Ap runs twice a month and converts the credits to a payout. Each crypto is paid to a linked wallet for each network. If there is no linked wallet for a network, a notice is sent to the vendor and the vendor must add a wallet within 30 days or forfeit the payout. For $ the credited amount is converted to the primary payout wallet (xch) at a determined market price. Then the converted amount is distributed to the linked wallet.
+
+Conversion of $ to crypto for payout follows a human in the loop process. Ap is notified that a dollar amount needs to be converted to coins on a network for each network. Ap does the conversion based on the best available market price. Ap enters the net converted amount (minus network and exchange fees) for each network. The payout then happens based on the net converted amount. The payout network is chosen to minimize the network and exchange fees. For example defi xch currently has 0 network and exchange fees using peer to peer offers.
+
+
+# Validation
+
+The usefulness of the network increases with provider stability. The network incorporates incentives for providers to maximum uptime and service level called validation. The network incorporates an active and passive assessment of stability.
+
+Active assessment is spot checking done as a user would against an internet target owned or authorized by the network. The test measures include throughout, connection statistics, and total time to complete. The tests create real load and pay the provider as any user would.
+
+Passive measurements happen as part of the contract. These include the percentage of contract accepted and percentage of contracts that end with an error.
+
+The active and passive statistics are combined for 90 days to create a validation score. Providers with higher scores rise to the top of matchmaking and recommendation in the network. 
+
+Providers who keep their system perfectly up for 90 days will have the highest validation score.
+
+
+# Leases
+
+A user can star a provider to add them to the top of their personal matching and recommendation. Additionally a user can commit a minimum contract amount per month to a provider. This functions as a star with an additional incentive to the provider. The monthly amount credits the usage of that provider up to that amount, and over usage will be charged as normal. When the lease amount is not fully used, the amount is paid out to the provider prorated by the validation score. For example a provider with a .5 validation score will get only .5 of the committed lease amount.
+
+The lease allows users to give incentive to the providers they care about to remain stable . The provider can see how much they are losing by not achieving maximum validation score.
+
+
+
+# Synthetic load
+
+The network can drive synthetic contracts to any provider. These contracts test the provider to network link and are used for stress testing the environment. Synthetics are built into the protocol.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+source: rpi/README.md
+url: https://docs.ur.io/rpi
+---
+
+
+# URnetwork on Raspberry Pi
+
+URnetwork can integrate with Raspberry Pi devices to provide and route traffic on the network.
+
+There are several popular adblocking and VPN projects for Raspberry Pi. URnetwork works with these projects to add additional networking options.
+
+[PiHole](#pi-hole)
+
+[PiVPN](#pivpn)
+
+
+## Provide
+
+Follow the steps in [the provider doc](https://docs.ur.io/provider) to build a binary provider for Linux arm64.
+
+TODO integrate to start automatically
+
+
+## Route traffic on the network
+
+Follow the steps in [the tether doc](https://docs.ur.io/tether) to build a binary tether for Linux arm64.
+
+TODO integrate to start automatically and route traffic
+
+TODO steps to set up a local Wifi AP that routes traffic to URnetwork
+
+
+## Pi-hole
+
+[Pi-hole](https://pi-hole.net/) is a great choice for a network-wide adblocker. The following steps set up URnetwork to run inside a Pi-hole deployment to route traffic post-blocking.
+
+
+## PiVPN
+
+[PiVPN](https://www.pivpn.io/) is a good project to run a self-managed Wireguard server. It is possible to send all egress traffic for connected clients to URnetwork following the steps below.
+
+If you want to route only some clients to URnetwork, URnetwork has a Wireguard server mode that can be deployed side-by-side to create custom configurations that route to URnetwork. Follow the steps below.
+
+
+---
+source: edgeos/README.md
+url: https://docs.ur.io/edgeos
+---
+
+
+# URnetwork on Ubiquiti EdgeOS
+
+URnetwork can integrate with Ubiquiti EdgeOS routers to provide and route traffic on the network.
+
+All EdgeRouter models are supported. Popular models for home users are ER X and ER4.
+
+
+## Provide
+
+Follow the steps in [the provider doc](https://docs.ur.io/provider) to build a binary provider for Linux arm.
+
+TODO integrate to start automatically
+
+
+## Route traffic on the network
+
+Follow the steps in [the tether doc](https://docs.ur.io/tether) to build a binary tether for Linux arm.
+
+TODO integrate to start automatically and route traffic
+
+
+
+---
+source: routeros/README.md
+url: https://docs.ur.io/routeros
+---
+
+
+# URnetwork on MikroTik RouterOS
+
+URnetwork can integrate with MikroTik RouterOS routers to provide and route traffic on the network.
+
+All hEX models are supported. Popular models for home users are RB750.
+
+
+## Provide
+
+Follow the steps in [the provider doc](https://docs.ur.io/provider) to build a binary provider for Linux arm.
+
+TODO integrate to start automatically
+
+
+## Route traffic on the network
+
+Follow the steps in [the tether doc](https://docs.ur.io/tether) to build a binary tether for Linux arm.
+
+TODO integrate to start automatically and route traffic
+
+
+
+---
+source: router/testing-notes.md
+url: https://docs.ur.io/router/testing-notes
+---
+
+# Router testing notes
+
+We're using this space to collect feedback on how we can improve with running the provider on router hardware.
+
+Below is a table of router and device models, architecture, and notes when running. Please add notes and links to gists/repos of any relevant scaffolding to set up the provider in the section below. Over time we will fold these into [the provider docs](https://docs.ur.io/provider).
+
+## Provider binary
+
+Download the `urnetwork-provider-XXX.tar.gz` from [releases](https://github.com/urnetwork/build/releases) to get binaries for many architectures:
+
+```
+linux/
+    386
+    amd64
+    arm
+    arm64
+    mips
+    mips64
+windows/
+    amd64
+    arm64
+darwin/
+    amd64
+    arm64
+```
+
+Or use the community docker image:
+
+```
+docker pull bringyour/community-provider:latest
+docker run -ti bringyour/community-provider:latest --help
+```
+
+## Notes
+
+Please submit PRs to edit this.
+
+| Model | Architecture | Notes |
+|-------|--------------|-------|
+| Raspberry Pi | arm64 | Setting up the provider to run with systemctl works well. It also works to run the provider inside of docker. |
+
+
+---
+source: trust-and-safety/trust-and-safety.md
+url: https://docs.ur.io/trust-and-safety/trust-and-safety
+---
+
+
+
+# Default Safe: Our Trust and Safety Process
+
+This page outlines our process as of May 2024. This file is versioned so that you can track changes. For input and feedback please join [our Discord](https://bringyour.com/discord).
+
+Our trust and safety process is how we create a network for all users to safely participate with the most access and the most privacy possible. At BringYour our goal is to create a network where everyone can participate knowing they will be safe, and users are confident their traffic is uncensored, anonymous, and encrypted. 
+
+The process we use is to combine an automated "frontline" with a catch-all "backline" abuse audit process that preserves privacy. Most issues are resolved automatically by the frontline, which involves a mix of protocol and economic incentives. It involves turning off protocols associated with botnets and copyright abuse, while keeping web and app traffic uncensored and free. All levels are opt-out, meaning there are ways for providers to change the rules. Our stance is that we want to have a safe default, but allow users to have freedom of choice.
+
+
+## Warrant canary
+
+If the [warrant canary](https://docs.ur.io/trust-and-safety/warrant-canary) exists, it means that we confirm:
+
+- BringYour has never turned over our encryption or authentication keys or our customers' encryption or authentication keys to anyone.
+
+- BringYour has never installed any law enforcement software or equipment anywhere on our network.
+
+- BringYour has never provided any law enforcement organization a feed of our customers' content transiting our network.
+
+- BringYour has never modified network content at the request of law enforcement or another third party.
+
+- BringYour has never weakened, compromised, or subverted any of its encryption at the request of law enforcement or another third party.
+
+
+
+## Transparency report
+
+We publish [quarterly statistics](https://docs.ur.io/trust-and-safety/transparency-report) of the number and type of abuse reports, decryptions of the abuse logs, and type of outcomes.
+
+
+
+
+## Frontline protocol and economic incentives
+
+The frontline are automated rules embedded within the clients and providers. If the client and provider mutually agree to change the rules, it is possible to use different rules. However, it is not possible for one party to to change the rules without the other party, and a mismatch in rules will raise a contract dispute. In this way these rules are the default, but there are ways that two parties can opt-out of the rules. Our stance is that we want to have a safe default, but allow users to have freedom of choice. We explain the directions to change the rules at the end.
+
+The current default set of frontline rules are split into protocol limits, rate limit, and contract limits.
+
+
+### Protocol limits
+
+**No local network access**
+
+Only public unicast addresses are routable. Traffic to private or multicast addresses will not route.
+
+
+**Disable unencrypted protocols**
+
+Plain DNS and HTTP are disabled. The device must use DoH/DoT and HTTPs.
+
+Unencrypted mail protocols are disabled. The encrypted versions of these protocols are supported.
+
+DNS (port 53) is blocked.
+
+HTTP (port 80) is blocked.
+
+IMAP (port 143) is blocked.
+
+SMTP (port 25) is blocked.
+
+POP (port 110) is blocked.
+
+
+**Block restricted ports**
+
+The restricted port range is used by many core internet protocols which are most susceptible to abuse. Our goal is to block all restricted ports except protocols needed by mainstream users to access almost all of the web, communication, apps, and gaming.
+
+HTTPS (port 443) is unblocked.
+
+DoH (port 443) in unblocked.
+
+DoT (port 853) is unblocked.
+
+IMAP TLS (port 993) is unblocked.
+
+SMTP TLS (ports 587 and 465) is unblocked.
+
+POP TLS (port 995) is unblocked.
+
+SFTP (port 990) is unblocked.
+
+
+**Block protocols that commonly lead to abuse to providers**
+
+We unblock all user ports except protocols that lead to an excess number of abuse reports for providers. It does not mean these protocols are inherently bad. Rather, they cause an a strain for providers that makes it harder to safely be a provider. Generally user ports are used widely in WebRTC, communication, and gaming.
+
+Bittorrent (ports 6881-6889) is blocked.
+
+IRC (port 6667) is blocked.
+
+
+### Rate limits
+
+**Connection rate limit per source**
+
+Each source can only create a limited number of new TCP connections and UDP streams per second. The number is high enough that it does not impact normal use cases. The goal of the rate limit is to prevent traffic abuse using the network.
+
+
+**Parallel connections limit per source**
+
+The number of parallel connections per source is limited. Additionally the number of parallel connections per provider is limited by the ulimit settings of the provider device. The goal of the parallel limit is to prevent prevent traffic abuse using the network.
+
+
+### Contract limits
+
+**Contract priority**
+
+Contracts are assigned a priority by the platform. The contract priority for a client is determined by its contribution to the network. Providing and being a premium user are considered contributions to the network. Providers may dynamically rate limit connections based on contract priority.
+
+To make the network more resilient to bots, contract priority is weighted towards premium users and providing premium traffic. In other words, the spend per GiB is the core unit used to confer priority to providers. In this way priority is correlated with money flow and is harder to influence without spending money.
+
+**Minimum contract close**
+
+Minimum contract close has been deprecated in favor of contract priority. This lets us better support free users.
+
+
+### Changing the rules
+
+On our roadmap is to let providers turn off any of the default rules. The providers would do this knowing the network is not able to keep them safe. We are considering a way to let providers signal which rules are enabled, so that clients who want to choose a different set of rules can choose the providers that match those rules. In other words, users could select providers that disable rules when searching for providers.
+
+For example providers with absolutely free internet could remove most rules and serve clients who want that.
+
+
+
+## Backline abuse audit process that preserves privacy
+
+We operate as a US company and want to stay and scale in the US. We take the stance that the company itself may be an adversary to user privacy, so that users must be protected with hard cryptography and properly distributed protocols. Our goal is to advance the state of art of logging with better cryptography, so that we can have proper duty of care to resond to abuse, while taking the position that the company should not know anything about the users. Our approach is detailed below on how we response to abuse reports and take action to remove abuse from network.
+
+Any abuse request must be sent to [notice@bringyour.com](mailto:notice@bringyour.com) and tell us:
+- **When**
+- **Source IP and port**
+- **Destination IP and port**
+- **SHA256 hash of the TLS client random if the abusive connection is TLS encrypted**
+- **Reporter contact email. This must be from an official domain that we can use to verify.**
+- **Reporter abuse notice**
+
+We will need to verify the identify of the reporter, as well as the validity of the abuse notice. We will typically reach out directly to the reporter contact to do the verification.
+
+Typically an abuse notice is submitted by a provider when they receive a notice. However we also work with abuse reporting services so that notices can be filed directly to the network.
+
+We are able to enforce abuse notices because the network maintains an encrypted audit log. Providers opt-in to send encrypted records to the log, and throw away their key. Only the destination or ISP would be able to derive the key, which is what they send in an abuse report.
+
+This ensures extracting data is intractable unless a mostly-complete key is provided, as from an abuse notice. In this way the company cannot decode the data without a legitimate abuse report. With a mostly-complete key, finding the accounts involved in a single record is possible, but it is still computationally intensive by design. We are able to extract single records in sufficient time to feed into the trust and safety process. The technical details can be found in the audit protocol[^1].
+
+The encrypted audit log is maintained for 24 months.
+
+The trust and safety process involves looking at both parties involved in any incident, as well as the submitter of the incident. The result may be that any of the parties or submitter may be removed from the network. Additionally abuse patterns are considered as candidates to incorporate into the frontline system.
+
+### Opting out
+
+Providers may opt out of sending encrytped audit records to the platform. However in these cases we will not be able to take action on abuse reports submitted by the provider.
+
+### SHA256 hash of the TLS client random
+
+Today the TLS client random value is not typically logged on servers and ISPs. We believe this leads to a standard of logging that forces proxy companies to store logs in a way that compromises user privacy. Using a 256-bit hash of the TLS client random creates enough entropy in the encrypted record key such that it could not be brute forced without a mostly complete abuse report.
+
+We require server and ISP logging where the SHA256 of the TLS client random is stored as part of the log, allowing us and other proxy companies to store user logs in a way that protects user privacy. Our standard is published in the audit protocol[^1]. We offer consulting services to implement this logging so that servers and ISPs can add a hash of the TLS client random to their logs. Please contact [security@bringyour.com](mailto:security@bringyour.com).
+
+[^1]: See the audit protocol: https://github.com/bringyour/connect/tree/main/connect
+
+
+
+---
+source: trust-and-safety/warrant-canary.md
+url: https://docs.ur.io/trust-and-safety/warrant-canary
+---
+
+
+
+# Warrant Canary
+
+The existence of this page confirms:
+
+- BringYour has never turned over our encryption or authentication keys or our customers' encryption or authentication keys to anyone.
+
+- BringYour has never installed any law enforcement software or equipment anywhere on our network.
+
+- BringYour has never provided any law enforcement organization a feed of our customers' content transiting our network.
+
+- BringYour has never modified network content at the request of law enforcement or another third party.
+
+- BringYour has never weakened, compromised, or subverted any of its encryption at the request of law enforcement or another third party.
+
+See the [trust and safety page]() for more information.
+
+
+
+---
+source: trust-and-safety/transparency-report.md
+url: https://docs.ur.io/trust-and-safety/transparency-report
+---
+
+
+# Transparency report
+
+This page lists quarterly statistics of the number and type of abuse reports, decryptions of the abuse logs, and type of outcomes since the start of the company.
+
+See the [trust and safety page]() for more information.
+
+
+## Statistics
+
+
+| Quarter | Abuse reports | Successfully decrypted records | Unsuccessfully decrypted records |
+| - | - | - | - |
+| April-June 2024 | 0 | 0 | 0 |
+| January-March 2024 | 0 | 0 | 0 |
+
+
+## Outcomes
+
+### April-June 2024
+
+No outcomes.
+
+
+### January-March 2024
+
+No outcomes.
+
+
+
+---
+source: legal/vdp.md
+url: https://docs.ur.io/legal/vdp
+---
+
+# BringYour, Inc. Vulnerability Disclosure Policy
+
+## Introduction
+
+BringYour, Inc. welcomes feedback from security researchers and the general public to help improve our security. If you believe you have discovered a vulnerability, privacy issue, exposed data, or other security issues in any of our assets, we want to hear from you. This policy outlines steps for reporting vulnerabilities to us, what we expect, what you can expect from us.
+
+## Systems in Scope
+
+This policy applies to any digital assets owned, operated, or maintained by BringYour, Inc.
+
+## Out of Scope
+
+- Assets or other equipment not owned by parties participating in this policy. 
+
+Vulnerabilities discovered or suspected in out-of-scope systems should be reported to the appropriate vendor or applicable authority.
+
+## Our Commitments
+
+When working with us, according to this policy, you can expect us to:
+
+- Respond to your report promptly, and work with you to understand and validate your report;
+- Strive to keep you informed about the progress of a vulnerability as it is processed;
+- Work to remediate discovered vulnerabilities in a timely manner, within our operational constraints; and
+- Extend Safe Harbor for your vulnerability research that is related to this policy.
+
+## Our Expectations
+
+In participating in our vulnerability disclosure program in good faith, we ask that you:
+
+- Play by the rules, including following this policy and any other relevant agreements. If there is any inconsistency between this policy and any other applicable terms, the terms of this policy will prevail;
+- Report any vulnerability you’ve discovered promptly;
+- Avoid violating the privacy of others, disrupting our systems, destroying data, and/or harming user experience;
+- Use only the Official Channels to discuss vulnerability information with us;
+- Provide us a reasonable amount of time (at least 90 days from the initial report) to resolve the issue before you disclose it publicly;
+- Perform testing only on in-scope systems, and respect systems and activities which are out-of-scope;
+- If a vulnerability provides unintended access to data: Limit the amount of data you access to the minimum required for effectively demonstrating a Proof of Concept; and cease testing and submit a report immediately if you encounter any user data during testing, such as Personally Identifiable Information (PII), Personal Healthcare Information (PHI), credit card data, or proprietary information;
+- You should only interact with test accounts you own or with explicit permission from the account holder; and
+- Do not engage in extortion.  
+
+## Official Channels 
+
+Please report security issues via <security@ur.io>, providing all relevant information. The more details you provide, the easier it will be for us to triage and fix the issue.
+
+## Safe Harbor
+
+When conducting vulnerability research, according to this policy, we consider this research conducted under this policy to be:
+
+- Authorized concerning any applicable anti-hacking laws, and we will not initiate or support legal action against you for accidental, good-faith violations of this policy;
+- Authorized concerning any relevant anti-circumvention laws, and we will not bring a claim against you for circumvention of technology controls;
+- Exempt from restrictions in our Terms of Service (TOS) and/or Acceptable Usage Policy (AUP) that would interfere with conducting security research, and we waive those restrictions on a limited basis; and
+- Lawful, helpful to the overall security of the Internet, and conducted in good faith.
+
+You are expected, as always, to comply with all applicable laws. If legal action is initiated by a third party against you and you have complied with this policy, we will take steps to make it known that your actions were conducted in compliance with this policy.
+
+If at any time you have concerns or are uncertain whether your security research is consistent with this policy, please submit a report through one of our Official Channels before going any further.
+
+> Note that the Safe Harbor applies only to legal claims under the control of the organization participating in this policy, and that the policy does not bind independent third parties.
+
+---
+source: legal/privacy.md
+url: https://docs.ur.io/legal/privacy
+---
+
+Products Privacy Policy
+
+Last modified: May 8, 2025
+
+Introduction
+
+BringYour, Inc. (**"Company"** or **"We"**) respect your privacy and are committed to protecting it through our compliance with this policy.
+
+This policy describes the types of information we may collect from you or that you may provide when you visit the URnetwork website or use the URnetwork app (our "Products") and our practices for collecting, using, maintaining, protecting, and disclosing that information.
+
+This policy applies to information we collect:
+
+-   On these Products.
+
+-   In email, text, and other electronic messages between you and our Products.
+
+-   Through mobile and desktop applications you download from Product, which provide dedicated non-browser-based interaction between you and this Product.
+
+Please read this policy carefully to understand our policies and practices regarding your information and how we will treat it. If you do not agree with our policies and practices, your choice is not to use our Products. By accessing or using this Product, you agree to this privacy policy. This policy may change from time to time (see Changes to Our Privacy Policy). Your continued use of this Product after we make changes is deemed to be acceptance of those changes, so please check the policy periodically for updates.
+
+Children Under the Age of 16
+
+Our Products are not intended for children under 16 years of age. No one under age 16 may provide any information to or on the Products. We do not knowingly collect personal information from children under 16. If you are under 16, do not use or provide any information on our Products or on or through any of its features. If we learn we have collected or received personal information from a child under 16 without verification of parental consent, we will delete that information. If you believe we might have any information from or about a child under 16, please contact us at: <notice@ur.io>.
+
+California residents under 16 years of age may have additional rights regarding the collection and sale of their personal information. Please see Your California Privacy Rights for more information.
+
+Information We Collect About You and How We Collect It
+
+We collect certain types of information from and about users of our Products, including information for:
+
+-   Cryptocurrency wallet addresses.
+
+-   The city, region, and country of users.
+
+All personal information that we collect from and about users is limited to e-mail address or telephone number, by which you may be contacted online or offline.
+
+We collect all of the information above directly from you when you provide it to us.
+
+**Information You Provide to Us**
+
+The information we collect on or through our Products may include:
+
+-   Information that you provide by filling in forms on our Products. This includes information provided at the time of subscribing to our service. We may also ask you for information when you report a problem with our Products.
+
+-   Records and copies of your correspondence (including email addresses), if you contact us.
+
+You also may provide information to be published or displayed (hereinafter, "**posted**") on public areas of the Product (collectively, "**User Contributions**"). Your User Contributions are posted on and transmitted to others at your own risk. We cannot control the actions of other users of the Products with whom you may choose to share your User Contributions. Therefore, we cannot and do not guarantee that your User Contributions will not be viewed by unauthorized persons.
+
+How We Use Your Information
+
+We use information that you provide to us:
+
+-   To present our Products and its contents to you.
+
+-   To provide you with information, products, or services that you request from us.
+
+-   To provide you with notices about your account, including expiration and renewal notices.
+
+-   To carry out our obligations and enforce our rights arising from any contracts entered into between you and us, including for billing and collection.
+
+-   To notify you about changes to our Products or any products or services we offer or provide though it.
+
+Disclosure of Your Information
+
+We may disclose aggregated statistics about our users without restriction. All user data used to produced these statistics are aggregated and de-identified.
+
+Deletion of user data
+
+Users can delete their account and associated personal information at any time using the Delete Account option.
+
+Changes to Our Privacy Policy
+
+It is our policy to post any changes we make to our privacy policy on this page with a notice that the privacy policy has been updated on the Product home page. If we make material changes to how we treat our users' personal information, we will notify you. The date the privacy policy was last revised is identified at the top of the page. You are responsible for ensuring we have an up-to-date active and deliverable email address for you, and for periodically visiting our Website and this privacy policy to check for any changes.
+
+Contact Information
+
+To ask questions or comment about this privacy policy and our privacy practices, contact us at <notice@ur.io>.
+
+
+---
+source: legal/terms.md
+url: https://docs.ur.io/legal/terms
+---
+
+TERMS AND CONDITIONS FOR PROVISION OF INTERNET SERVICES:
+
+**THESE TERMS AND CONDITIONS CONTAIN IMPORTANT INFORMATION REGARDING
+YOUR USE OF URNETWORK SERVICES**
+
+**PLEASE READ THEM CAREFULLY**
+
+This Terms and Conditions (the "Agreement") is entered into between the
+Customer (\"You\", \"Your\", \"Customer\") and BringYour, Inc.
+(hereinafter referred to as \"Provider\"). This Agreement includes
+URnetwork\'s Privacy Policy as set forth at
+ur.io (the "Website") and any
+restrictions, instructions, and prohibitions located on the Website or
+Mobile App (collectively, \"Agreement\"). BY INSTALLING OR USING THE
+APPLICATION OR SERVICES, YOU: (A) ACKNOWLEDGE THAT YOU HAVE READ AND
+UNDERSTAND THIS AGREEMENT; (B) REPRESENT THAT YOU ARE OF LEGAL AGE TO
+ENTER INTO A BINDING AGREEMENT; AND (C) ACCEPT THIS AGREEMENT AND AGREE
+THAT YOU ARE LEGALLY BOUND BY ITS TERMS. IF YOU DO NOT AGREE TO THESE
+TERMS, DO NOT USE THE APPLICATION AND DELETE IT FROM YOUR DEVICES.
+
+Customer and Provider enter into an agreement, (the "Agreement") as follows:
+
+1.  Provider has developed peer-to-peer networking technology and a
+    mobile application (the "Application") to enable Customer to access
+    its own networks or subnetworks as described on the Website or
+    Mobile App (and incorporated here by reference) (the "Service").
+    Subject to the terms of this Agreement, Provider grants you a
+    limited, non-exclusive, and nontransferable license to:
+
+    a.  download, install, and use the Application for your personal use
+        on a device owned or otherwise controlled by you (\"Mobile
+        Device\") strictly in accordance with the Application\'s
+        documentation; and
+
+    b.  use on such Mobile Device the Services made available in or
+        otherwise accessible through the Application, strictly in
+        accordance with this Agreement
+
+2.  Application License Restrictions. You shall not:
+
+    a.  copy the Application, except as expressly permitted by this
+        license;
+
+    b.  modify, translate, adapt, or otherwise create derivative works
+        or improvements, whether or not patentable, of the Application;
+
+    c.  reverse engineer, disassemble, decompile, decode, or otherwise
+        attempt to derive or gain access to the source code of the
+        Application or any part thereof;
+
+    d.  remove, delete, alter, or obscure any trademarks or any
+        copyright, trademark, patent, or other intellectual property or
+        proprietary rights notices from the Application, including any
+        copy thereof;
+
+    e.  rent, lease, lend, sell, sublicense, assign, distribute,
+        publish, transfer, or otherwise make available the Application,
+        or any features or functionality of the Application, to any
+        third party for any reason, including by making the Application
+        available on a network where it is capable of being accessed by
+        more than one device at any time; or
+
+    f.  remove, disable, circumvent, or otherwise create or implement
+        any workaround to any copy protection, rights management, or
+        security features in or protecting the Application.
+
+3.  Reservation of Rights. You acknowledge and agree that the
+    Application is provided under license, and not sold, to you. You do
+    not acquire any ownership interest in the Application under this
+    Agreement, or any other rights thereto other than to use the
+    Application in accordance with the license granted, and subject to
+    all terms, conditions, and restrictions, under this Agreement.
+    Provider and its licensors shall retain its entire right, title, and
+    interest in and to the Application, including all copyrights,
+    trademarks, and other intellectual property rights therein or
+    relating thereto, except as expressly granted to you in this
+    Agreement.
+
+4.  Your Contributions. If you decide to provide egress sites or
+    contribute bandwidth (as further described on the Website or Mobile
+    App ("Your Contributions"), you may receive credits (minus any
+    service fees) in the form of digital assets. These amount per
+    service or may vary depending on market conditions and timing, and
+    the digital assets may increase or decrease in value. These digital
+    assets are provided as an incidental benefit to the Service and you
+    agree that the maximum redeemable value owed by Provider for any
+    digital assets outside of the Service is \$0.01. You agree that
+    contributing egress sites or bandwidth is at your own risk and that
+    Provider is not responsible for the actions of any users or any
+    violations of agreements or laws. Please see the Website or App for
+    additional pricing or restrictions.
+
+5.  Service and Performance. PROVIDER WILL FURNISH THE SERVICE ON AN "AS
+    IS" AND "AS AVAILABLE" BASIS AND PROVIDER EXPRESSLY DISCLAIMS ALL
+    WARRANTIES, INCLUDING WITHOUT LIMITATION WARRANTIES OF TITLE OR
+    NON-INFRINGEMENT, OR THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+    FITNESS FOR A PARTICULAR PURPOSE. YOUR USE OF AND RELIANCE ON THE
+    SERVICES OR ANY INFORMATION OR FEATURE PROVIDED THEREIN ARE AT YOUR
+    OWN RISK. WE WILL NOT BE RESPONSIBLE FOR ANY DAMAGES, LOSSES, OR
+    LEGAL CONSEQUENCES WHICH OCCUR AS A RESULT OF YOUR USE OF THE
+    SERVICES or YOUR CONTRIBITIONS. WE MAKE NO WARRANTY THAT THE
+    SERVICES WILL BE AVAILABLE ON A CONTINUOUS BASIS, SECURED, FREE OF
+    VIRUSES, WORMS, OTHER HARMFUL COMPONENTS, OR PROGRAM LIMITATIONS. WE
+    MAKE NO WARRANTY THAT WE WILL CORRECT ANY ERRORS, DEFECTS OR
+    OMISSIONS. WE DO NOT, EITHER EXPRESSLY OR IMPLIEDLY ASSUME ANY
+    RESPONSIBILITY FOR ANY LOSS, INJURY OR DAMAGES INCURRED AS A RESULT
+    OR IN CONNECTION WITH YOUR USE OF THE SERVICES (INCLUDING, WITHOUT
+    LIMITATION, ANY LOSS OF DATA OR OTHER DAMAGE TO DEVICE). THIS
+    DISCLAIMER SHALL APPLY TO ALL ADVICE, ASSISTANCE, DATA, INFORMATION,
+    OR SERVICE, NOW OR SUBSEQUENTLY FURNISHED, DELIVERED OR MADE
+    AVAILABLE BY PROVIDER, ITS AFFILIATES, ITS CONTRACTORS, MANAGERS,
+    MEMBERS OR THEIR RESPECTIVE EMPLOYEES OR AGENTS.
+
+6.  Neither Provider, nor its agents, contractors, employees,
+    manager(s), or members (collectively referred to hereafter as
+    "Provider's Group"), will be responsible for, and Customer waives
+    and relinquishes any claim against Provider's Group for any damage,
+    loss, cost or other expense, whether direct, indirect, consequential
+    or incidental, that Customer or any third party may suffer which is
+    related to, or results from Customer's use of the Service. This
+    includes, but is not limited to, loss of data or business resulting
+    from delays, non-delivery, mis-delivery, or interruptions as a
+    result of Provider's or Customer's (in)actions. CUSTOMER EXPRESSLY
+    ASSUMES ALL RISKS ASSOCIATED WITH CUSTOMER'S USE OF THE SERVICE,
+    including but not limited to those that might occur from the
+    introduction into Customer's computer(s) or networks of viruses,
+    worms, Trojan Horses, or from unauthorized entry or entries into
+    Customer's computer(s) or any other problem, which result from use
+    of, or occur through the Service. Customer agrees to defend,
+    indemnify and hold harmless, to the extent permitted by law,
+    Provider's Group from any damage, loss, cost, or expense that may
+    occur to Customer or any third party as a result of the use of the
+    Service. Customer agrees to defend, indemnify and hold Provider's
+    Group harmless from any and all liabilities, costs, judgements and
+    expenses, including reasonable attorney's fees, related to or
+    arising from: (a) any violation of this Agreement by Customer, or by
+    a third party or parties accessing the Service through Customer; (b)
+    use of the Service or the Internet or the placement or transmission
+    of any message, information, software or other materials on the
+    Internet by Customer, or by a third party or parties accessing the
+    Service through Customer: (c) claims for infringement of patents,
+    trademarks, trade secrets or copyrights arising from Customer's use
+    or use by a third party or parties accessing the Service through
+    Customer, of equipment and software, apparatus and systems, (whether
+    or not furnished by Provider), in connection with the Service.
+
+7.  No Liability for Content. Customer acknowledges that Provider
+    exercises no control over the form, content or nature of data,
+    images, information, material or anything of whatever nature passing
+    through the connection, (hereafter collectively referred to as
+    "Data") between Customer and Provider or obtained from any Data base
+    maintained by Provider or others, except as may occur pursuant to
+    the provisions of this Agreement. Customer assumes the entire risk
+    that may arise from the use or transmission from, through or to
+    itself of any Data, WHICH MAY INCLUDE SEXUALLY EXPLICIT MATERIAL OR
+    MATERIAL OFFENSIVE OR OBSCENE TO SOME PERSONS. Provider shall have
+    no duty or obligation to advise Customer of any risk that may arise
+    from the availability, use, possession or transmission of Data or
+    provide any information relating thereto, even if at any time
+    Provider should attempt to do so. Provider does not monitor has no
+    obligation to monitor any data that passes through the Service and
+    avails itself of the rights and immunities afforded to service
+    providers under the Digital Millennium Copyright Act and Section 230
+    of the Communications Decency Act. Should Provider, become aware of
+    Data which, it, in its sole discretion, deems to be in violation of
+    this Agreement, unacceptable or undesirable, it may remove or refuse
+    to post or transmit the Data or terminate Customer's access.
+    Provider's liability for any allegedly defective service provided
+    under this Agreement shall not exceed the amount paid by Customer to
+    Provider over the past six months. The Service provided to Customer
+    shall be considered to have been accepted unless Customer shall
+    provide written notice detailing the portion or portions of the
+    Service alleged to be defective or inadequate to Provider no later
+    than ten days after the day the allegedly defective or inadequate
+    services were furnished by Provider.
+
+8.  YOU EXPRESSLY ACKNOWLEDGE AND AGREE THAT IN NO EVENT WE (INCLUDING,
+    WITHOUT LIMITATION, OUR AFFILIATES AND THEIR RESPECTIVE OFFICERS,
+    DIRECTORS, EMPLOYEES AND AGENTS, VENDORS, DISTRIBUTORS, THIRD PARTY
+    LICENSORS, OR EQUIPMENT AND SERVICE PROVIDERS) SHALL BE LIABLE FOR
+    ANY DIRECT, INDIRECT, VICARIOUS, INCIDENTAL, SPECIAL, PUNITIVE,
+    CONSEQUENTIAL OR EXEMPLARY DAMAGES, INCLUDING BUT NOT LIMITED TO,
+    DAMAGES FOR LOST PROFITS, LOST BUSINESS OR LOST OPPORTUNITY,
+    BREACHES OF CONTRACT, GOODWILL, OR OTHER INTANGIBLE LOSSES (EVEN IF
+    WE HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES) OR OTHER
+    RELIEF ARISING OUT OF, OR RELATED TO, THESE TERMS, THE SERVICES, OR
+    YOUR USE OR INABILITY TO USE THE SERVICES. OUR LIABILITY SHALL NOT
+    EXCEED THE COST OF THE SERVICES. SOME STATES OR JURISDICTIONS DO NOT
+    ALLOW THE EXCLUSION OR THE LIMITATION OF LIABILITY FOR DAMAGES, IN
+    SUCH STATE OR JURISDICTIONS, OUR LIABILITY SHALL BE LIMITED TO THE
+    EXTENT PERMITTED BY LAW.
+
+9.  Lawful Use. Customer is solely responsible for
+    complying with all applicable laws and agreements with third parties
+    and ensuring that use of the Services does not result in breach of
+    any laws, agreements, or obligations to third parties. Customer
+    agrees that it shall only use the Services and to access networks to
+    which it has express rights or permission by the respective network
+    owner. All use of Provider's services must be for lawful purposes
+    and in accordance with any policy of any network accessed through
+    Provider. Customer shall neither use, nor permit use of Provider's
+    services in violation of any applicable federal, state or local
+    statute, law, ordinance, regulation or rule, all of which are
+    hereafter collectively referred to as "Governmental Rule". Customer
+    agrees that Provider may monitor and disclose information where
+    required to do so by law or government order. Should use of the
+    Service by Customer or by a third party or parties accessing the
+    Service through Customer, cause Provider's internet source to advise
+    Provider that it will terminate or restrict Provider's connectivity
+    to the Internet, unless some specified action is taken, Provider may
+    temporarily suspend the Service, or some part thereof, limit or
+    prevent use of the Service by a particular person, group or entity,
+    and/or terminate this Agreement. No reduction in the Service Fee
+    will be made if the Service or a part thereof is suspended or if a
+    particular person, group or entity is not permitted to use the
+    Service as provided in the previous sentence.
+
+10. Customer Use. Any conduct by Customer that, in
+    Provider's sole discretion, inhibits or restricts any other
+    customer, person or entity from using or enjoying Provider\'s
+    Internet Service shall entitle Provider to immediately disconnect
+    Provider\'s Internet Service to Customer and terminate this
+    Agreement without notice. Customer agrees to use Provider's Internet
+    Service only for lawful purposes. Customer may not use, or allow
+    others to use, Customer\'s Provider's Internet Service account,
+    either directly or indirectly, to:
+
+    a.  post, transmit, promote, or facilitate the distribution of any
+        unlawful or illegal material, including but not limited to,
+        material that would constitute or encourage copyright or
+        trademark infringement, a criminal offense, give rise to civil
+        liability or otherwise violate any applicable local, state,
+        national or international law;
+
+    b.  post, transmit, promote, or facilitate the distribution of any
+        unsolicited advertising (including but not limited to mass or
+        bulk e-mails), promotional materials or other forms of
+        solicitation to other individuals or entities;
+
+    c.  unlawfully access other computers or services, or to cause a
+        disruption of service to other on-line users; or
+
+    d.  cause disruption to Provider\'s network, nodes, or services.
+
+11. Notices.
+
+    a.  We may amend this Agreement from time to time, at our sole
+        discretion and without any notice. It is your obligation to
+        periodically review this Agreement to ensure compliance. We will
+        make a reasonable effort, at our sole discretion, to provide you
+        with a notification regarding what we believe are material
+        changes to these terms. Such material changes will take effect
+        seven (7) days after such notice was provided. Otherwise, all
+        other changes to these terms are effective as of the stated
+        \"Last Revised\" date and your continued use of the Services
+        following the Last Revised date will constitute acceptance of,
+        and agreement to be bound by, those changes. Notices or other
+        communications required or permitted to be given pursuant to
+        this Agreement shall be in writing and shall be considered as
+        properly given if sent by email or mailed by certified mail, or
+        provided through the application interface.
+
+        FOR PROVIDER:
+
+        <notice@ur.io>
+
+        with Copy to:
+        
+        BringYour, Inc.
+        2261 Market Street #5245
+        San Francisco, CA 94114
+
+    b.  A party may change the address or phone numbers set out above for
+        purposes of notice under this contract by giving written notice to
+        the other party or parties hereto of such change in the same manner
+        as is provided above.
+
+
+12. Default. Default under this Agreement is a
+    failure to comply with a material term or condition hereof. In the
+    event of a default, the non-defaulting party may give the other
+    party written notice specifying the default and the defaulting party
+    shall have ten (10) days thereafter in which to cure same. If the
+    default is by Customer, and not timely cured, Provider may; (i),
+    terminate service to Customer and retain all prepaid amounts,
+    or (ii) interrupt the Service until the default is cured with no
+    refund of any prepaid amounts. In addition, Provider may also
+    declare due and demand immediate payment of, any installments
+    remaining unpaid, with interest thereon at the rate of (18%) per
+    annum from the date of default in payment thereof until fully and
+    finally paid, along with reasonable attorney's fees, court costs or
+    other expenses it may incur in enforcing this Agreement. If this
+    Agreement is terminated by mutual agreement or, if Provider fails to
+    cure a noticed default, Customer's sole remedy is to cancel any
+    subscription through the applicable Application Store. Failure to
+    declare any default immediately upon occurrence, or a delay in
+    taking any action in connection therewith, shall not waive such
+    default nor any legal right or privilege to take action at any time
+    thereafter. Termination of service by Provider does not relieve
+    Customer of existing debts or obligations pursuant to this
+    Agreement.
+
+13. Export Regulation. The Application may be
+    subject to US export control laws, including the Export Control
+    Reform Act and its associated regulations. You shall not, directly
+    or indirectly, export, re-export, or release the Application to, or
+    make the Application accessible from, any jurisdiction or country to
+    which export, re-export, or release is prohibited by law, rule, or
+    regulation. You shall comply with all applicable federal laws,
+    regulations, and rules, and complete all required undertakings
+    (including obtaining any necessary export license or other
+    governmental approval), prior to exporting, re-exporting, releasing,
+    or otherwise making the Application available outside the US.
+
+14. Governing Law. This Agreement shall be
+    subject to and governed under the laws of the State of Texas. Any
+    and all obligations and payments are due and performable and
+    payable in Harris County, Texas. The parties agree that
+    jurisdiction and venue for purpose of any and all lawsuits, causes
+    of action, arbitration, or other disputes shall be in Harris
+    County, Texas.
+
+15. Force Majeure. Neither party shall be liable or
+    responsible to the other party for any delay, damage, loss,
+    failure or inability to perform caused by "force majeure". The
+    term "force majeure," as used in this Agreement, shall include the
+    following: an act of God, strike, act of a public enemy, war,
+    mines or other items of ordinance, blockage, public rioting,
+    lightning, fire, storm, hurricane, flood, explosions, inability to
+    obtain materials, supplies, labor permits, servitude, or rights of
+    way, acts or restraints of any governmental authority, epidemics,
+    landslides, lightning storms, earthquakes, washouts, arrests,
+    restraints of rulers and people, civil disturbances, explosions,
+    breakage or accident to machinery or lines of equipment, temporary
+    failure of equipment, freezing of equipment, and any other cause,
+    whether of the kinds specifically enumerated above or otherwise,
+    which is not reasonably within the control of the parties and
+    which by the exercise of due diligence could not reasonably be
+    prevented or overcome. Events reasonably within the control of the
+    party having the difficulty shall not constitute "force majeure"
+    and shall be remedied with the exercise of due diligence. This
+    paragraph does not apply to payments due under this Agreement.
+
+16. Payment. All payments are done through the applicable
+    application store such as Google's Play Store or Apple's App Store
+    (each an "Application Store") and are subject to such Application
+    Store terms with regards to charge of the Subscription,
+    cancellation, refunds all of the payment terms. For more information
+    regarding Cancellation see the applicable Application
+    Store subscription cancellation webpages.
+
+17. Intellectual Property. Except as expressly granted
+    herein, we retain all right, title and interest in and to our
+    Services, as well as any content provided or made available in
+    connection with the Services (excluding Third Party Services). We
+    reserve the right to disable access to the Services by anyone who
+    uses them to infringe intellectual property rights.
+
+18. Provider reserves the right, at any time and from time to time, at
+    its own discretion, to add Services, to modify, suspend, terminate
+    or discontinue any or all the Services, or any part thereof or any
+    user's access thereto. Where we assume that such change may affects
+    an existing Service, we will provide you with a prior written notice
+    and you may be able to terminate the Service. We may, at any time
+    and at our sole discretion, change, modify, add, or remove features
+    and functionality of our Services without notice. You hereby agree
+    that we may automatically download and install updates, from time to
+    time, without prior notification. These updates are designed to
+    improve, enhance, and further develop the Services. You agree to
+    receive such updates as part of your use of the Services. If we
+    believe that such updates or upgrades shall materially affect your
+    use of the Services or your rights, we will make a reasonable effort
+    to provide notification to you of such.
+
+19. Indemnification. You hereby expressly agree to
+    indemnify, defend, and hold us (including our affiliates,
+    subsidiaries, successors, contractors, employees, directors, agents,
+    suppliers, licensors, service providers and partners) harmless from
+    any and all claims, damages, obligations, losses, liabilities,
+    costs, debts, and expenses (including but not limited to attorney
+    fees) arising from: (i) your use of any of our Services; (ii) your
+    violation and/or breach of any term of these Terms; and (iii) any
+    damage of any sort, whether direct, indirect, special or
+    consequential, you may cause to any third party which relates to
+    your use of the Services (including your violation of any third
+    party rights).
+
+20. Termination. This Agreement, the license provided
+    herein, and Customer\'s right to use Provider\'s Internet Service
+    may be terminated by Provider at any time for violations of
+    provisions contained in this Agreement, and most specifically, if
+    Customer violates any of the terms of Section 13 of this Agreement.
+    Customer may terminate this Agreement at any time deleting all apps
+    or software and notifying Provider.
+
+21. Binding Agreement. This agreement shall be binding
+    upon and inure to the benefit of the parties, their respective
+    heirs, executors, administrators, legal representatives, successors
+    and assigns, except that it may not be assigned by Customer.
+
+22. Arbitration. Any controversy or claim arising out of
+    or relating to this contract, or the breach thereof, shall be
+    settled by arbitration administered by the American Arbitration
+    Association in accordance with its Commercial \[or other\]
+    Arbitration Rules, and judgment on the award rendered by the
+    arbitrator(s) may be entered in any court having jurisdiction
+    thereof.
+
+23. Severability. If any provision of this
+    Agreement is illegal or unenforceable under applicable law, the
+    remainder of the provision will be amended to achieve as closely as
+    possible the effect of the original term and all other provisions of
+    this Agreement will continue in full force and effect.
+
+24. Waiver. No failure to exercise, and no delay
+    in exercising, on the part of either party, any right or any power
+    hereunder shall operate as a waiver thereof, nor shall any single or
+    partial exercise of any right or power hereunder preclude further
+    exercise of that or any other right hereunder. In the event of a
+    conflict between this Agreement and any applicable purchase or other
+    terms, the terms of this Agreement shall govern.
+
+25. This document and the Privacy Policy and any other policies on the
+    Website or Mobile App constitute the entire agreement between
+    Provider and Customer. This agreement may not be modified except in
+    writing and when signed by duly authorized representatives of
+    Provider and Customer. In the event Customer issues a purchase
+    order, memorandum, specifications or other instrument covering the
+    services provided, such purchase order, memorandum, specifications,
+    or instrument is for Customer's internal purposes only, and any and
+    all terms and conditions contained therein, whether printed or
+    written, shall not be of any force or effect as between the parties
+    to this Agreement. All parties hereby acknowledge that they have
+    read and understood this Agreement and any attachments and exhibits
+    thereto. This agreement is effective as of the Commencement Date,
+    and remains in effect until terminated pursuant to its terms.
+
+
+---
+source: support/delete.md
+url: https://docs.ur.io/support/delete
+---
+
+# How to Delete your Account
+
+Under the Account -> Settings section, find the Deleta Account button. Tap the button and confirm. Your network and associated information will be irrevocably and permanently deleted from the platform.
+
+### Android screenshot
+
+![Delete Account Android](DeleteAccountAndroid.png)
+
+### iOS screenshot
+
+![Delete Account iOS](DeleteAccountiOS.png)
+
+
+---
+source: changelog/2024-10-31-update-1/update-1.md
+url: https://docs.ur.io/changelog/2024-10-31-update-1/update-1
+---
+
+
+# Update 1
+
+We launched a major update this month. We rebranded to URnetwork ([https://ur.io](https://ur.io)) with a new look and app. URnetwork is now free, with a supporter subscription. Our economic model was updated to reflect a new subsidy payout, which is paid to people who provide capacity to the network. We also launched Android TV support. We're building a new type of internet infrastructure, and simplifying the product was an important step.
+
+We made a few changes to the site to streamline our organization:
+- [docs.ur.io](https://docs.ur.io) Documentation backed by the [docs repo] on GitHub.
+- [feedback.ur.io](https://feedback.ur.io) Product suggestions and feedback. This is a public site for structured feedback on the product.
+- [support@ur.io](mailto:support@ur.io) Support has been moved to email. This simplifies for us, where we may link out to documentation, GitHub issues for bugs or improvements, or feedback for other feedback.
+- [our Discord](https://bringyour.com/discord) Chat us here about technical or product discussion. This is a way to connect with the team building URnetwork. We're on pretty much every day.
+
+What's next? Update 2 will be focused entirely on iOS and payout improvements.
+
+
+
+---
+source: changelog/2024-10-31-tether/tether.md
+url: https://docs.ur.io/changelog/2024-10-31-tether/tether
+---
+
+# Tether: Improving Compatibility of URnetwork with the WireGuard Protocol
+
+[WireGuard](https://www.wireguard.com/) is one of the most popular open-source VPNs due to its simple yet fast nature. In this article, we'll discuss how we integrated WireGuard into URnetwork to create a smoother and more convenient experience for users already familiar with its setup and benefits. The source code of the project can be found [here](https://github.com/bringyour/connect/tree/tether/tetherctl).
+
+## WireGuard Crash Course
+
+First, let's go over the basics of WireGuard and how it works in order to understand what we expect from our solution. 
+
+WireGuard works by adding a logical (virtual) network interface, which acts as a tunnel between endpoints (`peers`). This interface can be controlled through normal means like `ip-tables` and `if-config`. A WireGuard client controls multiple interfaces, where each interface has a private and public key that is used when encrypting/decrypting traffic going through it. A peer is another WireGuard client's interface which we wish to communicate with. 
+
+In an interface, peers are defined by their public key, a local IP, and an endpoint through which the peer can be reached. When a packet is sent through a WireGuard interface, the destination is used to figure out which peer corresponds to the desired target. Then, the packet is encrypted with that peer's public key and is sent to the endpoint of the peer. When receiving a packet, it is decrypted with our interface's private key and authenticated for a peer. Then, the source IP and port of the packet are remembered as the endpoint of the authenticated peer. Once decrypted, the payload of the packet is the plaintext packet the peer is sending through the tunnel. Additionally, each peer is allowed to use only a certain range (or list) of local tunnel IPs, and if the plaintext packet is received outside of this range for a peer, then it is simply discarded as this peer is not allowed to send in this range.
+
+For example, let's define two configurations, one for a WireGuard interface which will act as a server:
+```ini
+[Interface]
+ListenPort = 33336
+PrivateKey = 4HOYXaS0mtLH9ZChsPaDQ3W/L7Z/rrchr8CMDqZGgXg=
+
+[Peer]
+PublicKey = 10NguWHSLJ0tUOr4AkbTtOEYHoagq1KH/PJSIJ3SwFs=
+AllowedIPs = 192.168.90.1/32
+
+[Peer]
+PublicKey = vi2iosrlXoDeZT08aXlq4AxXUNKO04NDuEeCw2Z7sD0= 
+AllowedIPs = 192.168.90.2/32
+```
+
+And another for a WireGuard interface which will act as a client:
+```ini
+[Interface]
+PrivateKey = 2JB7HwgWaOnmCpKA9TlMLTLdIYeNOZMnrmy3YI7JYnk=
+ListenPort = 29043
+
+[Peer]
+PublicKey = UESAy9LgT3PR77Tl1RCnHuj+ZtFvYMeWahnTIEhEvXM=
+AllowedIPs = 0.0.0.0/0
+Endpoint = 88.42.58.36:33336
+```
+
+So, the client wants to send its packets through the server to appear as if the server is sending them (\**VPN magic*\*). As we can see, configuration files in WireGuard are quite simple. They are `ini` formatted, and each interface has a private key (used to decrypt packets) and a port (through which packets will be sent). Each peer has a public key (with which outgoing packets meant for that peer will be encrypted) and a list of allowed IPs (only packets from these IPs will be accepted from this peer). 
+
+In the above example, the client has a key pair `<10NguWHSLJ0tUOr4AkbTtOEYHoagq1KH/PJSIJ3SwFs=, 2JB7HwgWaOnmCpKA9TlMLTLdIYeNOZMnrmy3YI7JYnk=>` and is allowed to only send packets through its interface using IP `192.168.90.1`. When the client wants to send a packet to the server (with key pair `<UESAy9LgT3PR77Tl1RCnHuj+ZtFvYMeWahnTIEhEvXM=, 4HOYXaS0mtLH9ZChsPaDQ3W/L7Z/rrchr8CMDqZGgXg=>`), it will encrypt it with the server's private key and then send it to the known `endpoint` of the server (`88.42.58.36:33336`). When the server sends a response back to the client, it will encrypt it with the client's private key and send it to the last known endpoint of the client (which is recorded when a packet is received from the client). The client is configured to accept packets from all IPs from the server, thus making it route all of its traffic through the server. For a more detailed explanation of how WireGuard works, check this [page](https://www.wireguard.com/).
+
+## Desired Solution
+
+Now that we know how WireGuard works, let's define what we want to achieve. Simply put, we want **an intuitive way for users to connect existing WireGuard clients to the URnetwork**.
+
+This entails that we want URnetwork providers to function as routers of the traffic of WireGuard clients of already existing distributions, e.g., your phone's WireGuard app. From a user perspective, a user can choose a provider that will act as a router for their WireGuard traffic and set up a WireGuard tunnel in any WireGuard distribution, allowing them to route all of their traffic in that tunnel through the chosen provider.
+
+This article focuses on how we developed a proof of concept solution that allows anyone to create a WireGuard interface that uses a URnetwork client to add peers, create configuration files for existing WireGuard distributions, and, most importantly, route the traffic of peers.
+
+## Task Division
+
+Let's divide in a more concrete manner the features we expect from our solution and try to address each separately. The main goal is we want our solution to be able to use a single command to create a WireGuard interface, configure it, and make it accessible for users to add their own peers to the interface. Additionally, we want the ability to:
+1. manage peers in an interface (list, add, remove, etc.);
+2. get a configuration file that a peer can use in an existing WireGuard distribution;
+3. manage interfaces (list, add, remove, etc.);
+4. configure an interface (change its keypair, listening port, local/tunnel address space);
+5. change the availability of an interface (bring it up or down).
+
+Moreover, some other quality-of-life features which we can add are a way to:
+- generate `<public, private>` key pairs;
+- view the configuration of an interface;
+- save the configuration of an interface so it can be started up more easily;
+- run commands before or after an interface is started or stopped, similar to how some common WireGuard tools allow.
+
+## Problem 1: WireGuard Implementation
+
+The first dilemma we encounter when trying to build our solution is that we need to pick a WireGuard implementation that URnetwork clients will run. We can try using existing WireGuard modules; for example, since version 5.6, the Linux Kernel has built-in WireGuard support, making for an optimized kernel-level integration. However, using this approach will make our solution platform-dependent or, at the least, not available on all platforms. Additionally, we will need a way to make the WireGuard network interfaces route their traffic through a URnetwork client.
+
+Another approach that could prove successful is to use an existing implementation and make it run in userspace, as then we abstract from the logical (virtual) interfaces that WireGuard uses, and hence we can use it on any platform. This is the approach we go for. As URnetwork is developed in `go`, we need a WireGuard implementation in `go` that a URnetwork client can run. Luckily, the developers of WireGuard already have a version which we can use: [wireguard-go](https://github.com/WireGuard/wireguard-go).
+
+This version, however, is very bloated as it has implementations for several platforms (Linux, Windows, macOS, FreeBSD, and OpenBSD), which all use a logical interface. Thus, we will need to remove this platform dependence and re-write it to work in userspace. The way we go about this is to first leave only one implementation (in our case the Linux one since the machine we use is running Ubuntu). Then, as URnetwork runs fully in userspace, we can replace all of the logic for handling packets through a logical interface with a URnetwork client (we use a local user NAT for the proof of concept). 
+
+Here, we encounter a problem: how to route the packets as they need to be sent through URnetwork with the public IP of the server machine, but they are received with the (local) tunnel address of the WireGuard interface. The solution is simple—a NAT table that stores which pair of `IP:port` to map to which `tunnel IP`. So, for each outgoing packet, we save its `tunnel IP` in the NAT table using the `public IP` of the server and the `source port` of the packet as the key. Then, when we receive a packet, we can check the NAT table (using `destination IP` and `port` as the key) and reverse the IP back to the `tunnel IP`. Since we are modifying each packet, we need to also recalculate the checksums to make it a valid packet. It should be noted that the current implementation only works with TCP and UDP packets, as most traffic is sent using TCP and UDP in the modern Internet. Additionally, ICMP packets are ignored as they do not have a transport layer and hence a port for the NAT table. This is not detrimental, as ICMP packets are not strictly necessary for basic Internet functionality.
+
+The last task remains to have a way to interact with our userspace WireGuard implementation programmatically instead of the default way of textual configurations. Luckily, this was straightforward, as the official WireGuard project provides a [cross-platform userspace implementation](https://www.wireguard.com/xplatform/#interface) (CPI) for consistency in configuration and management of WireGuard interfaces. Here, we should note that, to stay consistent, in code, we refer to WireGuard interfaces as `devices` everywhere, as that is how the original implementation, the CPI, and most WireGuard tools refer to them. A device is an abstraction from the logical interface that they are built on. This abstraction is also nice for us, as we no longer use a logical interface, so there is no confusion in the naming. Hence, from now on, we use interface and device interchangeably.
+
+Going back to the programmatic configuration, we make use of the [`wgctrl`](https://pkg.go.dev/golang.zx2c4.com/wireguard/wgctrl#section-readme) module, which enables control of WireGuard devices on multiple platforms. More specifically, we use the [`wgtypes`](https://pkg.go.dev/golang.zx2c4.com/wireguard/wgctrl/wgtypes) package, as it has objects that conform to the CPI. So, we hence transition from using the original textual configurations to using `wgtypes.Config` objects. Finally, let's quickly run through an example to showcase how to create and configure a WireGuard device using our solution.
+
+```go
+	// 1. set up logger with desired log level (available - LogLevelVerbose, LogLevelError, LogLevelSilent)
+	logger := logger.NewLogger(logger.LogLevelVerbose, " (userspace-wireguard)")
+
+	// 2. configure the public IPs of the server (it has no ipv6 so we set it to nil)
+	var publicIPv4 net.IP = net.IPv4(1, 2, 3, 4)
+	var publicIPv6 net.IP = nil
+
+	// 3. create a tun device that uses userspace sockets to send packets
+	utun, err := tun.CreateUserspaceTUN(logger, &publicIPv4, &publicIPv6)
+	if err != nil {
+		logger.Errorf("Failed to create TUN device: %v", err)
+		os.Exit(1)
+	}
+
+	// 4. create the wireguard device
+	device := device.NewDevice(utun, conn.NewDefaultBind(), logger)
+	logger.Verbosef("Device started")
+
+	// 5. get the private key of the server and a peer that wishes to communicate with the server
+	privateKeyServer, err := wgtypes.ParseKey("4HOYXaS0mtLH9ZChsPaDQ3W/L7Z/rrchr8CMDqZGgXg=")
+	if err != nil {
+		logger.Errorf("Invalid server private key provided: %w", err)
+		os.Exit(1)
+	}
+	publicKeyPeer, err := wgtypes.ParseKey("10NguWHSLJ0tUOr4AkbTtOEYHoagq1KH/PJSIJ3SwFs=")
+	if err != nil {
+		logger.Errorf("Invalid peer public key provided: %w", err)
+		os.Exit(1)
+	}
+
+	// 6. set configuration (CPI)
+	port := 33336
+	config := wgtypes.Config{
+		PrivateKey:   &privateKeyServer,
+		ListenPort:   &port,
+		ReplacePeers: true,
+		Peers: []wgtypes.PeerConfig{
+			{
+				PublicKey:         publicKeyPeer,
+				ReplaceAllowedIPs: true,
+				AllowedIPs:        []net.IPNet{{IP: net.IPv4(192, 168, 90, 1), Mask: net.CIDRMask(32, 32)}},
+			},
+		},
+	}
+	if err := device.IpcSet(&config); err != nil {
+		logger.Errorf("Failed to Set Config: %v", err)
+		os.Exit(1)
+	}
+	
+	// 7. start up the device
+	device.AddEvent(tun.EventUp)
+
+	//... wait for termination signal ...
+	
+	// Finally, clean up
+	device.Close() 
+```
+
+*Voilà*, we have achieved our initial goal. We now have a way to programmatically interact with a WireGuard interface without the need to run any commands, and the **interface runs fully in userspace through URnetwork**, so it can be used on any platform. The latest version of the code can be found packaged in the [`userspace-wireguard`](https://github.com/bringyour/userspace-wireguard) module.
+
+## Problem 2: Managing Interfaces
+
+An easy way to enable developers to manage interfaces is through a command line interface. Thus, for our tool, we make it so that the features described in [Task Division](#task%20division) are available as commands in a CLI. Additionally, since WireGuard uses `ini` configuration files to set up interfaces, we can extend these files with some of our features to make it simpler for developers to use. Extending the existing configuration file format has the advantage of making our custom ones viable configuration files for standard WireGuard clients.
+
+### Device Configuration Files
+
+Let's explain how a configuration file is structured. A device can be configured using an `ini` formatted file similar to the ones used by the [`wg`](https://www.man7.org/linux/man-pages/man8/wg.8.html) kernel module. The configuration file can have two sections:
+* `[Interface]` - contains the configuration for the device/interface (mandatory, exactly one). The following options are available:
+  * `Address` - a comma-separated list of IPs in CIDR notation to be assigned to the interface (can appear multiple times).
+  * `ListenPort` - the port on which the interface listens.
+  * `PrivateKey` - the private key of the interface (mandatory).
+  * `PreUp`, `PostUp`, `PreDown`, `PostDown` - bash commands which will be executed before/after bringing up/down the interface (can appear multiple times). The special string `%i` is expanded to the interface name.
+  * `SaveConfig` - a `boolean` value to save the configuration of the interface when being brought down. Any changes made to the device while the interface is up will be saved to the configuration file.
+* `[Peer]` - contains the configuration for a peer (optional, can appear multiple times). The following options are available:
+  * `PublicKey` - the public key of the peer (mandatory).
+  * `AllowedIPs` - a comma-separated list of IPs in CIDR notation that the peer is allowed to access through the interface (can appear multiple times).
+  * `Endpoint` - the public IP of the server where the peer can be contacted.
+
+As expressed before, we have kept the configuration file in the same form as normal WireGuard configuration files. This reduces the learning curve for developers who are already familiar with WireGuard, allowing them to set up and manage devices through URnetwork with minimal extra effort. From the above options, the only non-standard ones are in the interface section, namely, `Address`, `PreUp`, `PostUp`, `PreDown`, `PostDown`, and `SaveConfig`. All of these options are also available in [`wg-quick`](https://www.man7.org/linux/man-pages/man8/wg-quick.8.html), which allows for users on Linux to set up a WireGuard interface in a simple manner, further reducing the overhead of using our solution.
+
+### CLI Commands
+
+The commands available in the command line interface aim to mimic the workflow that developers normally go through to set up a WireGuard interface. This includes many familiar commands from [`wg-quick`](https://www.man7.org/linux/man-pages/man8/wg-quick.8.html) and the [`wg`](https://www.man7.org/linux/man-pages/man8/wg.8.html) kernel module, such as `up`, `down`, `gen-priv-key`, `gen-pub-key`, `get-config`, and `save-config`. Each command corresponds to a specific action in managing WireGuard configurations, making it intuitive for users who have experience with traditional WireGuard setups \[[1](https://markliversedge.blogspot.com/2023/09/wireguard-setup-for-dummies.html), [2](https://www.vps-mart.com/blog/how-to-set-up-wireguard-on-VPS), [3](https://blog.frehi.be/2022/06/11/setting-up-wireguard-vpn-with-ipv6/)\].
+
+However, since our implementation operates in userspace rather than directly in the kernel, some differences arise. Additionally, while kernel-based WireGuard allows for lower latency due to its direct access to network interfaces, a userspace implementation can offer flexibility across different platforms and is often easier to extend with custom logic, such as choosing the depth of logs provided or operating devices programmatically.
+
+The list of commands that are currently supported by the CLI tool can be found below:
+```
+Tether cli.
+
+Usage:
+    tethercli add [--dname=<dname>] [--log=<log>] [--ipv4=<ipv4>] [--ipv6=<ipv6>]
+    tethercli remove [--dname=<dname>]
+    tethercli up [--dname=<dname>] [--config=<config>]
+    tethercli down [--dname=<dname>] [--config=<config>] [--new_file=<new_file>]
+    tethercli get-config [--dname=<dname>] [--config=<config>]
+    tethercli save-config [--dname=<dname>] [--config=<config>] [--new_file=<new_file>]
+    tethercli gen-priv-key 
+    tethercli gen-pub-key --priv_key=<priv_key>
+    tethercli get-device-names
+    tethercli get-device [--dname=<dname>]
+    tethercli change-device [--dname=<dname>] [--lport=<lport>] [--priv_key=<priv_key>]
+    tethercli add-peer --pub_key=<pub_key> [--dname=<dname>] [--endpoint_type=<endpoint_type>]
+    tethercli remove-peer --pub_key=<pub_key> [--dname=<dname>]
+    tethercli get-peer-config --pub_key=<pub_key> [--dname=<dname>] [--endpoint_type=<endpoint_type>]
+
+Options:
+    --dname=<dname>                   WireGuard device name. Keeps the last set value [initial: bywg0].
+    --config=<config>                 Location of the config file in the system [default: /etc/tetherctl/].
+    --log=<log>                       Log level from verbose, error, and silent [default: error].
+    --ipv4=<ipv4>                     Public IPv4 address of the device.
+    --ipv6=<ipv6>                     Public IPv6 address of the device.
+    --new_file=<new_file>             Location where the updated config should be stored. If not specified, the original file is updated.
+    --endpoint_type=<endpoint_type>   Type of endpoint to use for peer config [default: ipv4].
+    --lport=<lport>                   Port to listen on for incoming connections.
+    --pub_key=<pub_key>               Public key of a WireGuard peer (unique).
+    --priv_key=<priv_key>             Private key of a WireGuard device.
+```
+
+The CLI tool can be found in the [`tetherctl`](https://github.com/bringyour/connect/tree/tether/tetherctl) module of URnetwork. Let's also go through a small example of how to set up a device with a configuration file using the new CLI. We will use the same keys and configuration options as in the [WireGuard Crash Course](#WireGuard%20Crash%20Course) section.
+
+So, for the server, we define the following configuration stored in a file called `tbywg0.conf`:
+```ini
+[Interface]
+Address = 192.168.90.0/24
+ListenPort = 33336
+PrivateKey = 4HOYXaS0mtLH9ZChsPaDQ3W/L7Z/rrchr8CMDqZGgXg=
+SaveConfig = true
+
+[Peer]
+PublicKey = 10NguWHSLJ0tUOr4AkbTtOEYHoagq1KH/PJSIJ3SwFs=
+AllowedIPs = 192.168.90.1/32
+```
+
+Then, we can start `tetherctl` in CLI mode using the `go run . cli` command in a terminal. Next, we are presented with the integrated CLI where we can run commands after a provided input prompt `>`. What we will do is:
+1. Create a device called `tbywg0` (it has to match the name in the configuration file).
+```sh
+> add --dname=tbywg0 --log=v
+```
+2. Then, we bring up the device with verbose logging, providing the path to the above-created configuration file. 
+```sh
+> up --config=/root/connect/tetherctl/
+```
+
+**That's it!** We have a running device with a peer added to it. To make sure, we can see the device's current configuration we can use the following command:
+```sh
+> get-config --dname=tbywg0 --config=/root/connect/tetherctl/
+```
+Or if we want to see the underlying `wgtypes.Device` object, we can use:
+```sh
+> get-device --dname=tbywg0
+```
+
+Additionally, we can get the configuration file that the peer needs using:
+```sh
+> get-peer-config --dname=tbywg0 --pub_key=10NguWHSLJ0tUOr4AkbTtOEYHoagq1KH/PJSIJ3SwFs=
+```
+
+The output we get after running the command is:
+```ini
+# Config for public key "10NguWHSLJ0tUOr4AkbTtOEYHoagq1KH/PJSIJ3SwFs="
+[Interface]
+PrivateKey = __PLACEHOLDER__ # replace with your private key
+Address = 192.168.90.1/32
+DNS = 1.1.1.1, 8.8.8.8
+
+[Peer]
+PublicKey = UESAy9LgT3PR77Tl1RCnHuj+ZtFvYMeWahnTIEhEvXM=
+AllowedIPs = 0.0.0.0/0
+Endpoint = 88.42.58.36:33336
+```
+
+The output from this command can be used in any WireGuard app to connect to the device and route all of our traffic through the newly created device. The only thing that should be changed is the peer's private key, as the device does not have it. *Hooray!* We have achieved our goal of making a **fully interactable userspace WireGuard distribution that runs on URnetwork**. But how can users obtain their peer's configuration, as they cannot access the CLI?
+
+## Problem 3: Availability for Users
+
+As this is a proof of concept, we decide to go for an API. The API can be exposed through a simple HTTP server that users can send requests to. Thus, we add several endpoints, each serving a distinct purpose, including:  
+ * `/peer/add/:endpoint_type/*pubKey` (request method: `POST`) - adds a peer with the given public key to the WireGuard device. The endpoint type specifies which type of endpoint the peer wants to communicate with the server on (available values: any, ipv4, ipv6, domain). The request has no body. The config that the peer can use to set up its own WireGuard client is returned here (essentially runs the CLI `add-peer` command).  
+ * `/peer/remove/*pubKey` (request method: `DELETE`) - removes a peer with the given public key from the WireGuard device (essentially runs the CLI `remove-peer` command). The request will succeed even if the peer does not exist, meaning that if a request is accidentally repeated, the peer will only be removed once.  
+* `/peer/config/:endpoint_type/*pubKey` (request method: `GET`) - returns the configuration of a peer with the given public key (essentially runs the `get-peer-config` command) and the specified endpoint type of the server (available values: any, ipv4, ipv6, domain). The configuration can be used in any existing WireGuard distribution.  
+
+Additionally, we have added several commands so that a developer can start the API for any of its WireGuard devices through the CLI:  
+```
+Tether cli.
+
+Usage:
+    tethercli start-api [--dname=<dname>] [--api_url=<api_url>]
+    tethercli stop-api
+    
+Options:
+    --api_url=<api_url>               API url [default: localhost:9090].
+```
+
+The `--api_url` option defines the address and port where the API will be accessible. By default, it is set on `localhost:9090`, but if you want to expose it to be accessible through your public IP, you can set `--api_url=:9090`. As an example, let's continue from where we left off in the last section. Let's say the developer wants users to be able to access the device through the API. Then, they can run:  
+```sh
+> start-api --dname=tbywg0 --api_url=:9090
+```
+
+Then, a user with a peer defined by the keypair `<vi2iosrlXoDeZT08aXlq4AxXUNKO04NDuEeCw2Z7sD0=, WDxx84eTgEdpZ+ykGHSNWEtYKzFAXshtPSLLCUbr4XE=>` needs to make a `POST` request with the following URL: `http://88.42.58.36:9090/peer/add/any/vi2iosrlXoDeZT08aXlq4AxXUNKO04NDuEeCw2Z7sD0=`  
+
+The response of the request is the configuration file that can be used by the user to create a tunnel with the device (after putting in their peer's private key). In our case, this is:  
+```sh
+# Config for public key "vi2iosrlXoDeZT08aXlq4AxXUNKO04NDuEeCw2Z7sD0="
+[Interface]
+PrivateKey = __PLACEHOLDER__ # replace with your private key
+Address = 192.168.90.2/32
+DNS = 1.1.1.1, 8.8.8.8
+	
+[Peer]
+PublicKey = UESAy9LgT3PR77Tl1RCnHuj+ZtFvYMeWahnTIEhEvXM=
+AllowedIPs = 0.0.0.0/0
+Endpoint = 88.42.58.36:33336
+```
+
+Additionally, as we can see, the peer is given the next available IP (`192.168.90.2`) in the local address space, as defined by the device's configuration. Currently, choosing the next available IP is done in a brute-force manner by iterating through all IPs in the local tunnel subrange, checking if they are used by another peer, and if not, using it. This process can be greatly improved, however, prioritizing efficiency is not the primary goal of this proof of concept.  
+
+Well, anyway, *job well done*! We now **provide users with a way to add their peers to a device and get a configuration file** that can be used in any WireGuard distribution to set up a tunnel.
+
+## Problem 4: Single Command
+
+We move on to the final problem that needs to be tackled: creating a single command for setting up a device with a desired configuration where users can add their peers to the device easily. Thankfully, having solved the previous problems makes this one quite straightforward to address.
+
+Since our devices are fully in userspace, represented using `wgtypes.Device` objects, we can create a workflow that accommodates our needs, i.e., creates a device, then configures it using our custom/extended configuration files, and finally starts the API. This is the *culmination* of the project—using our previous solutions to accomplish the current task. The way we decide to solve this is by using the [`Builder`](https://en.wikipedia.org/wiki/Builder_pattern) design pattern as it solves the following problems:  
+- *How can a class (the same construction process) create different representations of a complex object?* For us, this is the `device` object.  
+- *How can a class that includes creating a complex object be simplified?* For us, this is the `configuration` process.  
+
+The design pattern comprises a `Director` object, which manages different `Builder` objects that are the separate "workflows." For now, we have implemented only one `Builder` type, called a `DefaultBuilder`, which implements the `DeviceBuilder` interface:  
+```go
+type IDeviceBuilder interface {
+	CreateDevice(dname string, configPath string, logLevel int) error          // creates and brings up a device
+	StopDevice(dname string, configPath string) error                          // brings down a device
+	ManageEndpoint(opts EndpointOptions) error                                 // add/remove/reset endpoint
+	ManagePeer(dname string, opts PeerOptions) (string, error)                 // add/remove peer from device (and get config if requested)
+	StartApi(dname string, apiURL string, errorCallback func(err error)) error // start API for device
+	StopApi(dname string) error                                                // stop api of device
+	StopClient()                                                               // closes tether client
+}
+```
+
+Then, we add a command that runs through our workflow (using the functions of the `DeviceBuilder` interface):  
+```sh
+Tether control.
+
+Usage:
+    tetherctl default-builder --dname=<dname> --config=<config> --api_url=<api_url> [--log=<log>]
+    
+Options:
+    --dname=<dname>         Wireguard device name.
+    --config=<config>       Location of the config file in the system.
+    --api_url=<api_url>     API url.
+    --log=<log>             Log level from verbose(v), error(e), and silent(s) [default: error].
+```
+
+The workflow is as follows:  
+1. Use the provided log level for the logger.  
+2. Add an endpoint (use the public IP of the server).  
+3. Create the device by the provided name using the given configuration file (here we also start the device).  
+4. Start an API server at the provided URL (now users can add their peers and obtain configuration files).  
+5. Wait for an interrupt signal.  
+6. Stop the API, device, and WireGuard client.  
+
+Finally, we create an automatic way to run this command on the startup of the developer's system. This will allow them to create a WireGuard device and then have it always running in the background. To limit the scope of this project, we consider only Linux. So we create a service that runs the command "`/etc/tetherctl/tetherctl default-builder --dname=%i --config=/etc/tetherctl/ --api_url=:9090`" on startup. To set up the service on your system, check the [README](https://github.com/bringyour/connect/tree/tether/tetherctl) of the project. There you can also find further notes on the previous sections as well as the source code of the project.  
+
+So once again, *hurrah*! We solved another problem: **automating the process of creating and configuring a device through a single command**.
+
+## Summary
+
+This brings the end of the project, so thank you for following this article. We quickly summarize what we did and provide an extra section where we discuss pitfalls and future work.
+
+This project aimed at integrating WireGuard into URnetwork to create a smoother and more convenient experience for users already familiar with its setup. Using a configuration file format similar to [`wg-quick`](https://www.man7.org/linux/man-pages/man8/wg-quick.8.html) and the [`wg`](https://www.man7.org/linux/man-pages/man8/wg.8.html) kernel module makes the setup intuitive, letting developers get devices and peers up and running with a minimal learning curve. The CLI commands mimic standard WireGuard functionalities and workflows while running fully in userspace through URnetwork. This integration provides a seamless experience for users while remaining flexible for developers. The source code of the project can be found [here](https://github.com/bringyour/connect/tree/tether/tetherctl).
+
+## Pitfalls and Future Work
+
+This project was not without its **challenges**. Initially, the exact solution wasn’t entirely clear, as we were still figuring out the requirements and the specific limitations tied to different platforms.  
+
+The problems we defined in this article were ordered from more detrimental to the design of the final solution to less detrimental. Unfortunately, during the development of the solution, we did not tackle them in the given order; hence, we were forced to redesign the solution and refactor the code base several times.
+
+At first, we planned to rely on the Linux kernel WireGuard module and had bash scripts to handle parts of the setup automatically. However, we quickly hit a compatibility barrier due to differences across platforms and their corresponding WireGuard implementations, which pushed us toward a userspace solution. Shifting to this approach required several rounds of refactoring, impacting everything from CLI commands to the API and the service structure. Each shift brought us closer to the final solution.
+
+A lot of time was spent at the start researching WireGuard’s features to decide exactly what our solution should include. This helped shape our configuration format and clarified what the final setup should look like. This early research gave us confidence and a foundation to move forward with a better sense of direction.
+
+**Looking to the future**, there are a few areas we want to expand. First, as previously mentioned, we can improve the selection of the next allowed IP, which would make the process more efficient. Also, while currently both IPv4 and IPv6 are supported, only IPv4 is tested in the full setup, so IPv6 functionality may require additional testing and adjustments to ensure full functionality within the system.
+
+Second, our solution should be integrated more tightly with URnetwork, ideally allowing users to route their traffic through URnetwork providers rather than the current approach of using a user local NAT. We also want to give users the ability to pick specific providers to route their traffic, adding more control based on things like location or bandwidth needs.
+
+Ultimately, we envision this project as part of the URnetwork app, where users can generate configurations compatible with any WireGuard distribution. In the URnetwork app, users should also be able to directly manage routing options and provider choices, making it easier to get everything set up the way they need. With these improvements, we’re aiming for a more adaptable, all-in-one tool for the next stages of the project as a standalone feature.
+
+---
+source: changelog/2024-10-31-inspect/inspect.md
+url: https://docs.ur.io/changelog/2024-10-31-inspect/inspect
+---
+
+# User Traffic Categorization through On-Device Clustering: Empowering Privacy and Control
+
+When you browse the internet or use an app on your phone, a significant portion of your traffic is not related to the content or services you’re accessing. Websites and apps often include elements from third-party services, such as analytics providers, content delivery networks, and advertising networks. These third parties can track your behavior, collect data on your browsing habits, and even influence where your data is routed. Often, users aren’t fully aware of this data-sharing, which can impact privacy and online experiences.
+
+In this article, we aim to tackle this issue by exploring an approach that categorizes the web traffic of users by the website/app they are using as well as if any third parties are involved. Thus, giving users a clear view of who is interacting with their data and allowing them to make informed choices on how it flows, promoting transparency and giving control back to the user.
+
+## Understanding The Problem and Constraints
+
+To start, let’s look at what we’re trying to solve and the data we can work with. As a VPN, the URnetwork app has access to all of a user’s internet traffic. The goal is to use this traffic data to help users better understand how their data is being accessed and enable them to control this flow of data effectively.
+
+To give users a clear picture of their traffic patterns, we need to **identify the applications they use and categorize any third-party connections**, such as ads, analytics, or other services. This information enables users to make informed choices about their data—for example, blocking specific third parties. This could also allow them to save profiles for apps, such as, "when I'm using this app, always route my traffic through a certain country." Additionally, we want to guarantee that user traffic is never shared with unauthorized parties. An easy way to achieve this is by developing a solution that works **entirely on-device**. This ensures privacy by keeping the user’s information confidential and under their control.
+
+We also chose to avoid deep packet inspection (DPI) because users generate a vast amount of data daily, and processing it all on-device would be computationally expensive, potentially infeasible under a time constraint, and certainly raise privacy concerns. Avoiding DPI means we need to find a way to categorize traffic without actually looking into what users are sending or receiving. Hence, we will **only consider the headers of packets** as available information.
+
+This defines our problem and constraints—**identify the applications users use and categorize any third-party connections entirely on-device only considering the headers of packets**. Since URnetwork is written in `go`, we decided to build our solution in `go`. The source code can be found [here](https://github.com/bringyour/connect/tree/inspect-occurrence-data/inspect).
+
+## First Steps
+
+First, we need to define the input data. Since this project is meant to be used within URnetwork, which already parses the packets of a user for routing, we can get the input data in any format. The main idea is that packets are part of transport sessions (TCP, UDP, etc.), so we can try and group them in this manner. For this, we employ [protocol buffers](https://protobuf.dev/) (`protobuf`), as they are a language-neutral way of serializing data in a compact manner.
+
+We define four transport messages that correspond to the different packet types in a session:
+- `TransportOpen` - this is the opening message; if the session is a TLS one, we can also extract the name of the server with which the user is communicating (domain name).
+- `TransportClose` - this is the closing message; here, we also have information on why the connection was closed (error, timeout, etc.).
+- `WriteDataChunk` - this is application data sent by the client.
+- `ReadDataChunk` - this is application data received by the client.
+
+Hence, now we represent a transport session using a collection of the four message types where we expect each session to have at least a `TransportOpen`. All the other message types can be missing, e.g., if the session has not finished or there is no flow of application data. We can also add an ID for each different session to query them easily. For this, we decide to use [`ulid`](https://github.com/ulid/spec) as they can be monotonically ordered and can be sorted even when generated within a millisecond. Furthermore, they are case insensitive and do not use special characters.
+
+As already mentioned, in the final version, URnetwork will provide the `protobuf` transport messages that we work with. However, for this preliminary implementation (and for simpler testing), we need to be able to transform packets in an easier way. For this, we decide to use [`pcap`](https://en.wikipedia.org/wiki/Pcap) files, as they are a standardized packet capture format across platforms. So we implement a function that can parse `pcap` files into our transport records. From now on, we can safely assume that we work only with transport messages, as any `pcap` file can be converted into them.
+
+## Interpreting the Data
+
+Currently, we have a collection of transport sessions where each consists of different transport messages, but how can we interpret this data for our needs? Well, our main goal is to relate the different sessions to each other to try and figure out the ones that are part of the same application. This is a perfect use case for clustering. Most clustering algorithms work using the distance between the different input points. We, however, have sessions (and their packets), so we need to make our own relation that can be used as distance.
+
+The first idea that comes to mind is to define each session by the times at which the packets were sent, as it can be expected that sessions relating to the same application will be active during the same intervals of time. So we extract, for each session, a list of times (corresponding to the send/receive time of the packets) and compare them.
+
+### Sessions Comparison
+
+Now, the question is, how can we compare two sessions? Let's say that `sessionA` was active at `timeA`, and `sessionB` was active at `timeB`. Do we count this as a match between the sessions only if `timeA = timeB`, or if the two times have a 1-second difference, or somehow else entirely? Let's, for now, take the simplest approach—two times count as **overlapping** if they are within 1 second of each other. Then, we define the **total overlap** to be the number of pairs of times between the two sessions that overlap. For example, if we have sessions with times `[10, 15, 17, 18]` and `[11, 16]`, then the total overlap is 3 because there are 3 pairs that overlap (`<10, 11>`, `<15, 16>`, `<17, 16>`). We will later explore other approaches that might be better for overlap calculation.
+
+### Domain Interpretation
+
+Another piece of information that we don't fully use is the domain names of each session. As each domain can be broken down into hierarchical levels (top-, second-, third-level domains), we could potentially group sessions based on parent domains. For instance, `ipv4-abc.1.api.urnetwork.com` can be split into `api.urnetwork.com`, `urnetwork.com`, and `.com` as parent domains. So then, for example, if we encounter `api.urnetwork.com` and `vpn.urnetwork.com`, we can store their times separately as expected, but also group them under `urnetwork.com`. This approach allows us to relate sessions originating from the same parent domain better. Furthermore, if two domains that share the same parent domain are not related, this might prove that one (or both) of them is a third party that cannot be correlated to the bigger parent domain group. Note, we intentionally ignore top-level domains (like `.com`), as they are too general to provide meaningful relations. Thus, we split each domain into a second- and a third-level domain and aggregate times that share the same parent domain.
+
+## Test Data
+
+Before we move on to clustering, we need to generate some test data that we can use to visualize and verify our results. For this, we record in WireGuard a session where we go through a bunch of websites in a browser and note when we open a website and when we exit it (used for verifying later). The session is saved in a `pcap` file and then parsed into transport messages. For this article, we will go with a smaller example where we browsed Wikipedia for a bit, then CAT.com, then watched some Netflix, and finally read some news on The New York Times (in total ~4 minutes of capture). The times can be seen below:
+![timestamps of the test session with circled sectors of similar activity](./images/times_notated.png)
+
+As we can see, there are several times that seem to correlate. For example, in <span style="color:#3cd04a">green</span> we see domain names for Wikipedia, in <span style="color:#b341b9">purple</span> there seems to be some traffic for WhatsApp (which was running in the background at the time of recording the test session), in <span style="color:#f68434">orange</span> are Netflix-related domains, and in <span style="color:#4946ca">blue</span> - New York Times. In the future, we can use these related times to verify our clustering by checking if they are grouped together in the same cluster.
+
+## Overlap and Distance
+
+Let's try and visualize the overlap between the times:
+![heatmap of overlap between sessions](./images/heatmap_no_cluster_overlap.png)
+Here, we can clearly see the relation between the Netflix domains in <span style="color:#f68434">orange</span>, vaguely between the WhatsApp domains in <span style="color:#b341b9">purple</span>, and for the other domains, relations are harder to spot. So we should improve our overlap calculation. But before we start changing it, let's move on to the actual values that we need for clustering - distances.
+
+We need to map our overlap values to distance, i.e., higher overlap means less distance and lower overlap means more distance. Additionally, to account for outliers, the smaller overlaps should be easily distinguishable. We can use an exponential function to achieve this. One such function is exponential decay `e^(-λt)` where `t`, in our case, is normalized overlap (`overlap/max_overlap`), and `λ` is a constant. Additionally, a nice property of this function is that it maps the distance from 0 to 1. Now, let's try and visualize the distance matrix:
+![heatmap of distance between sessions](./images/heatmap_no_cluster_distance.png)
+
+Now, we see that the most prominent region is the WhatsApp one (in <span style="color:#b341b9">purple</span>), with the rest being somewhat recognizable. So we have not made any improvements to our distance relation.
+
+The results from the overlap and distance matrix might indicate that our underlying overlap function is not good at estimating the relationships. So let's try and pick out the most prominent clusters from the times plot and isolate them. We are left with these:
+![selected timestamps of seemingly related sessions](./images/ctimes.png)
+We have, in order: New York Times, Wikipedia, WhatsApp, CAT.com, and Netflix. Now, we can try using different overlap functions to find the best-fitting one. Currently, our approach counts the overlaps of pairs within one second. We can, however, move from this approach and try to represent each time as a continuous interval in time. Then, we can actually count the total overlap in seconds between the intervals. We call this `Fixed Margin Overlap`. For example, below we see the times `[100, 200, 300]` and `[150, 250, 350]` with a margin of `30` to the left and right. If we count, the total overlap is 50. Here, we also make sure not to double count if intervals from the same session (list) intersect. This algorithm is also known as a [sweep line algorithm](https://dilipkumar.medium.com/sweep-line-algorithm-e1db4796d638).
+![overlap as an interval](./images/overlap_fixed.png)
+
+Another approach would be to use some drop-off at the ends of the intervals so that closer times count for more overlap. We can use a Gaussian distribution for this. For example, below we get the times `[180]` and `[150, 250]` with a standard deviation of 30. We then calculate the overlap between each time from the first list (blue) with each time from the second list (yellow). Here, we decide to "double" count the intersecting distributions, as there is a drop-off, and a time overlapping both intersecting distributions should have a higher overlap than overlapping just one. Also, another measure we implement is a hard cutoff, which is a length in time larger than which we do not count overlaps. This tries to eliminate cases where we calculate the total overlap (as it needs to calculate the area below the curves) for very small values of overlap. A safe value for this is `4*standard deviation`, as that includes 99.99% of the original distribution.
+![overlap using gaussian distribution](./images/overlap_gaussian.png)
+
+Now we have two approaches that we can use: fixed margin and Gaussian overlap, each with a different parameter - margin and standard deviation, respectively. After some experimenting, we figure out that the best value for the parameters is around 0.01s or 10ms. This is a good middle ground between speed and accuracy, as the overlap calculation using the Gaussian method becomes slower with bigger parameter values. Below is the distance matrix for the previously shown subset of times where we see the relationships clearly outlined.
+![distance matrix using 10ms with gaussian overlap](./images/distance_matrix_10000000.png)
+As a final note on which approach is better, we currently have not seen big differences between the two approaches. Sometimes Gaussian overlap produces better results than fixed margin but not by much. So we advise using fixed margin if speed is of high importance; otherwise, Gaussian is the safer choice. Furthermore, we have a `python` script that compares different parameter values. This script can be used in the future to figure out the best value for the parameters. Lastly, we explored using other functions to convert from overlap to distance, but we have not included a discussion on our choice of using exponential decay for brevity and to maintain focus on the core concepts presented in this article.
+
+## Clustering
+
+At long last, we have everything we need to cluster the data. The question now is which clustering algorithm to choose. For this, we need to define the characteristics of our data. It is non-linear, with most values near 1 (max distance). The formed clusters are heterogeneous (different shape, size, and density) of an unknown amount with possibly unclustered points. Based on these characteristics, we decide that the best options for a clustering algorithm are HDBSCAN and OPTICS, as both are not sensitive to outliers, can form heterogeneous clusters of different densities, and leave some points unclustered. Additionally, the two methods we chose have quite similar parameters, with the main ones being relatively easy to choose. [This page](https://scikit-learn.org/stable/auto_examples/cluster/plot_cluster_comparison.html) shows a nice visualization of different clustering approaches to get an intuition behind their pros and cons.
+
+Now, let's try and cluster using the two approaches. To build the distance matrix, we choose to use Gaussian overlap with a standard deviation of 10ms as per the results of the last section. We also need to choose the constant `λ` for the exponential decay. After some testing, we find that when using OPTICS, a large value (we use `λ=150`) is needed to exaggerate the differences between the smaller overlap values. For HDBSCAN, the decay value does not matter (as long as it is bigger than 1) as HDBSCAN is actually an algorithm that builds upon DBSCAN by finding the most optimal value (in a quite efficient manner) for one of its parameters (`ε`), which is normally quite unintuitive to choose. Thus, the rate of decay `λ` for HDBSCAN doesn't matter as changing `λ` changes the optimal `ε` value, but HDBSCAN will still choose the correct one, which will ultimately produce the same clustering. The main advantage of having a bigger `λ` in general is that the differences are exaggerated, so it is easier to visualize the relationships between the sessions.
+
+Next, to cluster, we need to choose the main (intuitive) parameter for each algorithm, which is the minimum size at which a cluster will form. Normally, this would be 2, as any two related sessions should be clustered, but since we also include parent domains, we make it 3. Also, both approaches put the unclustered domains together in a cluster with `ID=-1` to indicate that they are unclustered. Now, after running the clustering for OPTICS, we get 6 clusters:
+
+| ClusterID | Domains                                                                                                                                                                                                                                                                                                                 |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -1        | 92 unclustered domains                                                                                                                                                                                                                                                                                                  |
+| 0         | '1.nflxso.net', 'cloud.netflix.com', 'cookielaw.org', 'netflix.com', 'nflxext.com', 'nflxso.net', 'nflxvideo.net', 'oca.nflxvideo.net', 'occ-0-768-769.1.nflxso.net', 'web.prod.cloud.netflix.com', 'www.netflix.com'                                                                                                   |
+| 1         | 'nytimes.com', 'privacymanager.io', 'static01.nytimes.com', 'www.nytimes.com'                                                                                                                                                                                                                                           |
+| 2         | 's7d2.scene7.com', 'scene7.com', 'www.youtube.com', 'youtube.com'                                                                                                                                                                                                                                                       |
+| 3         | '157.240.247.61', '240.247.61', '247.61', 'cdn.whatsapp.net', 'media-ams2-1.cdn.whatsapp.net', 'media-ams4-1.cdn.whatsapp.net', 'media-lhr6-1.cdn.whatsapp.net', 'media-lhr6-2.cdn.whatsapp.net', 'media-lhr8-1.cdn.whatsapp.net', 'media-lhr8-2.cdn.whatsapp.net', 'microsoft.com', 'mmg.whatsapp.net', 'whatsapp.net' |
+| 4         | '192.99.44.193', '44.193', '99.44.193', 'cat.com'                                                                                                                                                                                                                                                                       |
+
+Which we can visualize as a distance map:
+![distance matrix using optics](./images/optics/heatmap.png)
+We see that meaningful clusters are formed, namely for Netflix, NY Times, and WhatsApp, as well as some others that we can't be sure of, like scene7/YouTube and cat.com. 92 of the domains remain unclustered.
+
+Running HDBSCAN, we get 8 clusters:
+
+| ClusterID | Domains                                                                                                                                                                                                                                                                                                   |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -1        | 85 unclustered domains                                                                                                                                                                                                                                                                                    |
+| 0         | 'maps.gstatic.com', 'napps-2.com', 'nf.smartscreen.microsoft.com', 'privacyportal.onetrust.com', 'slack.com', 'smartscreen.microsoft.com'                                                                                                                                                                 |
+| 1         | 'downloads.napps-2.com', 'e2c46.gcp.gvt2.com', 'f-log-extension.grammarly.io'                                                                                                                                                                                                                             |
+| 2         | 'gnar.grammarly.com', 'grammarly.com', 'mp.microsoft.com'                                                                                                                                                                                                                                                 |
+| 3         | 'extension.femetrics.grammarly.io', 'femetrics.grammarly.io', 'grammarly.io'                                                                                                                                                                                                                              |
+| 4         | '157.240.247.61', '240.247.61', '247.61', 'cdn.whatsapp.net', 'media-ams4-1.cdn.whatsapp.net', 'microsoft.com', 'tile-service.weather.microsoft.com', 'weather.microsoft.com', 'whatsapp.net'                                                                                                             |
+| 5         | '1.nflxso.net', 'cat.com', 'cdn.cookielaw.org', 'cloud.netflix.com', 'cookielaw.org', 'googleapis.com', 'netflix.com', 'nflxext.com', 'nflxso.net', 'nflxvideo.net', 'nytimes.com', 'oca.nflxvideo.net', 'occ-0-768-769.1.nflxso.net', 'web.prod.cloud.netflix.com', 'www.netflix.com', 'www.nytimes.com' |
+| 6         | 'g1.nyt.com', 'nyt.com', 'static01.nytimes.com'                                                                                                                                                                                                                                                           |
+Which we can visualize as a distance map:
+![distance matrix using hdbscan](./images/hdbscan/heatmap.png)
+We again see that similar meaningful clusters are formed (Netflix, NY Times, and WhatsApp); however, the other smaller clusters seem to be also well-formed but also maybe split up (2 clusters for Grammarly). Also, the Netflix cluster seems to include some entries for NY Times. Finally, 85 of the domains remain unclustered.
+
+From these first results, we see that both methods form good clusters based on our distance matrix. Comparing the two, it seems that OPTICS is better at finding closely related sessions, whereas HDBSCAN is a bit more lax in what it considers a cluster. However, the more pressing concern is why some clusters were not formed, i.e., the Wikipedia one? There are several possible causes for this:
+- The data is too small to form the clusters (it is only ~4 minutes of traffic after all);
+- The overlap function used is still not good enough;
+- The cluster algorithm's other parameters can be further exploited to achieve better clustering.
+
+Relating to the first issue, we try generating a second dataset that is 3 times bigger and cluster similarly to how we did with the first one. The results seem to be better, with more of the meaningful clusters forming and even HDBSCAN outperforming OPTICS. So we can partially attribute for the "lackluster" first results to the size of the data. Next, we believe that the overlap function that is currently used is good at extracting the prominent features of the data and that, for this preliminary implementation, is sufficient.
+
+As to the final concern, we tried changing the other parameters. For completeness of results, we will go over the results without going into much detail on exactly why certain values provide the best results. For OPTICS, there seem to be some improvements when changing the `max_eps`, but nothing compared to the improvements in HDBSCAN. In HDBSCAN, there is one hyperparameter (`alpha`) that, when reduced to a small value (around `0.001`), we find more meaningful clusters are formed. Additionally, using `cluster_selection_epsilon=0.001` proves to work better for a bigger dataset. [This page](https://hdbscan.readthedocs.io/en/latest/parameter_selection.html) provides some intuition on how to choose values for the parameters of HDBSCAN. Our results with these values (using the initial smaller dataset) are as follows:
+
+| ClusterID | Domains                                                                                                                                                                                                                                             |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -1        | 84 unclustered domains                                                                                                                                                                                                                              |
+| 0         | 'extension.femetrics.grammarly.io', 'f-log-extension.grammarly.io', 'femetrics.grammarly.io', 'grammarly.io'                                                                                                                                        |
+| 1         | 'beacons.gcp.gvt2.com', 'gcp.gvt2.com', 'gvt2.com'                                                                                                                                                                                                  |
+| 2         | '157.240.247.61', '240.247.61', '247.61'                                                                                                                                                                                                            |
+| 3         | 'cdn.whatsapp.net', 'media-ams2-1.cdn.whatsapp.net', 'media-ams4-1.cdn.whatsapp.net', 'media-lhr6-1.cdn.whatsapp.net', 'media-lhr6-2.cdn.whatsapp.net', 'media-lhr8-1.cdn.whatsapp.net', 'media-lhr8-2.cdn.whatsapp.net', 'whatsapp.net'            |
+| 4         | 'accountcapabilities-pa.googleapis.com', 'cat.com', 'content-autofill.googleapis.com', 'en.wikipedia.org', 'fonts.googleapis.com', 'googleapis.com', 's7d2.scene7.com', 'safebrowsing.googleapis.com', 'scene7.com', 'wikipedia.org', 'www.cat.com' |
+| 5         | 'g1.nyt.com', 'nyt.com', 'nytimes.com', 'privacymanager.io', 'static01.nytimes.com', 'www.nytimes.com'                                                                                                                                              |
+| 6         | 'ipv4-c182-ams001-ix.1.oca.nflxvideo.net', 'nflxvideo.net', 'oca.nflxvideo.net'                                                                                                                                                                     |
+| 7         | '1.nflxso.net', 'nflxso.net', 'occ-0-768-769.1.nflxso.net'                                                                                                                                                                                          |
+| 8         | 'cloud.netflix.com', 'netflix.com', 'www.netflix.com'                                                                                                                                                                                               |
+Which we can visualize as a distance map:
+![distance matrix using hdbscan with better parameter values](./images/best/heatmap.png)
+We see that now 10 clusters are formed where the unclustered sessions remain about the same (84 compared to 85 previously). So what we have achieved using all the parameters is to split the previously bigger clusters into smaller, more meaningful ones, as well as find some other well-defined clusters. Based on these results (and also looking at the bigger dataset), we find that HDBSCAN is better to use as it makes a higher amount of smaller clusters compared to OPTICS (which makes bigger clusters in general, resulting in more of the data being unclustered). We should note, however, that our two datasets are still not very big, so it is possible that a different conclusion is drawn when testing with more data. This concludes the main analysis of this article.
+
+## Conclusion
+
+In this article, we outlined our approach on clustering transport sessions of packets such that similar sessions are clustered together. We defined a method to relate the sessions using the time of each packet. We further analyzed several approaches to calculate the relationships between sessions, including fixed margin overlap and Gaussian overlap. Both approaches represent the time of each packet as a continuous interval and calculate the total overlap between pairs of times of different sessions. We then proposed a method, exponential decay, to convert the overlap values to distance values that can be used to cluster the sessions.
+
+Finally, we evaluated two algorithms, HDBSCAN and OPTICS, by using them to cluster a small test dataset. We conclude that the two methods are quite similar in results, producing well-defined and meaningful clusters. When tweaking the hyperparameters, we find that HDBSCAN outperforms OPTICS in terms of finding more and smaller clusters. This, however, can be due to our relatively small test data, so a final conclusion cannot be drawn until further analysis is performed using more traffic data.
+
+## Discussion and Future Work
+
+Our main goal was to "**identify the applications users use and categorize any third-party connections entirely on-device only considering the headers of packets**." We showed that identifying the application/websites used can be achieved by grouping them into clusters. However, we have not directly addressed how to identify third-parties; hence, we theorize an approach that uses the results from the clustering to achieve this. As we split the domain of a session into parent domains, we can use these parent domains and the unclustered sessions to identify third-parties. If a session has sufficient overlap with other sessions but is still left unclustered, we might consider this session as a third-party. Additionally, if there is a small cluster where most of the sessions have parent domains that are either unclustered or clustered in another cluster, then we can consider the small cluster as a third-party cluster. Thus, in a future implementation of our approach, we believe there is enough information in the current results to obtain the third-parties present in the dataset.
+
+Another aspect we did not consider during our exploration is the memory that this approach is using, as with more data, more space is needed, which might not be feasible, especially on certain mobile devices. Thus, we briefly discuss a technique that can be used in the future to reduce the amount of space needed to store our distance matrix. Currently, the distance matrix is stored as a sparse matrix. This approach, however, makes it so we do not know the actual size this sparse matrix takes before we start parsing the transport sessions and calculating the overlap. One method that can be used is [count-min sketch](https://en.wikipedia.org/wiki/Count%E2%80%93min_sketch). With count-min sketch, we can build a fixed-size matrix that is probabilistic in nature with several guarantees on how close the estimated values are to the real ones (this data structure can only overestimate values). After a small test, we believe there is potential in this technique for achieving what we strive for.
+
+Finally, we compose a short list of the directions where this project can go in the future:
+- More efficient implementation of the clustering algorithm;
+- Use more of the data in the packet headers, e.g., size of the packet;
+- Optimize memory usage of clustering;
+- Technique for extracting third-parties;
+- Compose bigger test data.
+
+The next section outlines some specific challenges we encountered during development as well as how we use tests in our approach.
+
+## Challenges and Testing
+
+During the development of our solution, we tried and tested different approaches for many parts of the project. As already mentioned, there are 2 implementations for overlap functions, and we tried using other distance functions but ultimately decided on using exponential decay. Additionally, as `go` did not provide many options for clustering algorithms, we initially used `python` to figure out which approach is best. So all the clustering in this article was done using the [`scikit-learn`](https://scikit-learn.org/stable/) library. However, after figuring out that HDBSCAN is the clustering method we want to go for, we found a `go` implementation, and that is what is currently used in our code. This `go` implementation, however, did not have all the parameters the `python` one had, so the clustering results are not as good as the `python` ones (but not by a lot). Our code can be found [here](https://github.com/bringyour/connect/tree/inspect-occurrence-data/inspect), where we have left the `python` scripts to cluster if needed in the future. The [README](https://github.com/bringyour/connect/blob/inspect-occurrence-data/inspect/README.md) further explains all of the functionalities of the created module. There are several other `python` scripts that were used to create the visualizations of this article that can be used to understand the data and the steps of the solution.
+
+Lastly, we developed 2 testing methodologies and an evaluation technique to help with the assessment of the two clustering algorithms. First, we developed a genetic hill climbing algorithm to find the best parameter values for OPTICS and HDBSCAN. Second, we defined test cases for our test sessions consisting of clusters we expect the clustering to be able to find with high accuracy. Third, we defined a not-so-precise evaluation function to give us an idea of how the clustering is performing without the need to manually examine it every time. All of these methods are further explained in the [README](https://github.com/bringyour/connect/blob/inspect-occurrence-data/inspect/README.md) of the source code.
