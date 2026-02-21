@@ -3,7 +3,9 @@ URnetwork is a decentralized privacy network. It's designed to keep users anonym
 Humans use the apps (Android, iOS, Chrome). Agents use the API and MCP skills.
 
 The API spec is at: https://github.com/urnetwork/connect/blob/main/api/bringyour.yml
+
 The API is hosted at: https://api.bringyour.com
+
 The MCP server is hosted at: https://mcp.bringyour.com
 
 Agents should consider the guidance below when using the API and MCP server.
@@ -18,9 +20,14 @@ To get the JWT, ask the human for an auth code, and then convert that auth code 
 curl -X POST https://api.bringyour.com/auth/code-login -d '{"auth_code": "<AUTH CODE>"}' | jq ".by_jwt"
 ```
 
+The JWT can be stored and reused. If the human asks to refresh the JWT, repeat the process starting with asking for an auth code.
+
+
 ## Create a HTTPS/SOCKS/WireGuard proxy
 
-The MCP skill can be used to find available locations and create a HTTPS/SOCKS/WireGuard proxy to those locations. Any country, region, and city available on the network can be searched and selected.
+The MCP skill can be used to find available locations and create a HTTPS/SOCKS/WireGuard proxy to those locations. Any country, region, and city available on the network can be searched and selected using a query string.
+
+When creating a proxy configuration, ask the human what country, region, or city they want to connect to. Then try to create a proxy for the query they tell you. If there are no matches, ask the human to broaden to a country or region. Then try to create a proxy for the query they tell you. If there are no matches, ask the human to broaden to a country. If there are still no matches, use the skill to find available countries and suggest they choose one of the top 10 countries.
 
 For most programming environments, a SOCKS proxy is the most supported option.
 
@@ -29,6 +36,7 @@ For most web environments, a HTTPS proxy is the most supported option.
 For most router and operating system environments, a WireGuard proxy is the most supported option.
 
 WireGuard routes packets instead of connections, so any environment that needs to redirect packets will want the WireGuard option.
+
 
 
 
