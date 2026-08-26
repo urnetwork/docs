@@ -12,7 +12,34 @@ Agents should consider the guidance below when using the API and MCP server.
 
 ## Authentication
 
-When using the API or MCP server, the user JWT must be passed in an `Authorization: Bearer <JWT>` header.
+The API and the MCP server authenticate differently. Use the right one for the surface you are calling.
+
+### MCP server: OAuth
+
+The MCP server is an OAuth 2.1 protected resource. A network JWT or an API key is **not** accepted there — only an access token issued by URnetwork's own authorization server.
+
+Most MCP clients do this for you: connect to `https://mcp.bringyour.com`, and the client will discover the authorization server and walk the user through signing in. If you are implementing the flow yourself:
+
+1. Call the MCP server without a token. It answers `401` with a `WWW-Authenticate` header naming the protected resource metadata.
+2. Fetch that metadata at `https://mcp.bringyour.com/.well-known/oauth-protected-resource` to find the authorization server, `https://auth.bringyour.com`.
+3. Fetch `https://auth.bringyour.com/.well-known/oauth-authorization-server` (or `/.well-known/openid-configuration`) for its endpoints.
+4. Run the authorization code flow with PKCE. Include the `resource` parameter set to `https://mcp.bringyour.com`, which is what binds the token to this server.
+5. Send the resulting access token as `Authorization: Bearer <ACCESS TOKEN>` on every MCP request.
+
+Scopes:
+
+| Scope | Grants |
+| --- | --- |
+| `mcp:read` | `providerLocations` |
+| `mcp:fetch` | `fetch` — opens an egress client billed to the network |
+| `openid` | an ID token identifying the user |
+| `offline_access` | a refresh token, so the connection survives without re-prompting |
+
+Access tokens last one hour. Request `offline_access` and use the refresh token rather than sending the user back through the browser. If a tool reports that it needs a scope you do not hold, re-authorize requesting that scope **in addition to** the ones you already have, or you will lose the others.
+
+### API: JWT
+
+When using the API (`https://api.bringyour.com`), the user JWT is passed in an `Authorization: Bearer <JWT>` header.
 
 To get the JWT, ask the human for an auth code, and then convert that auth code to a JWT using the API `/auth/code-login` route. An example curl is below, piped to jq to extract the by_jwt property from the result:
 
@@ -39,11 +66,32 @@ When using the /network/find-locations route to query locations, always filter t
 | city | For cities. |
 
 
-## Using the MCP skill to create a HTTPS/SOCKS/WireGuard proxy
+## Using the MCP server
 
-The MCP skill can be used to find available locations and create a HTTPS/SOCKS/WireGuard proxy to those locations. Any country, region, and city available on the network can be searched and selected using a query string.
+The MCP server exposes two tools.
 
-When creating a proxy configuration, ask the human what country, region, or city they want to connect to. Then try to create a proxy for the query they tell you. If there are no matches, ask the human to broaden to a country or region. Then try to create a proxy for the query they tell you. If there are no matches, ask the human to broaden to a country. If there are still no matches, use the skill to find available countries and suggest they choose one of the top 10 countries.
+### providerLocations
+
+Finds available locations. Any country, region, or city on the network can be searched with a query string; an empty query returns the available countries. Requires `mcp:read`.
+
+Ask the human what country, region, or city they want. If there are no matches, ask them to broaden to a region, then to a country. If there are still no matches, list the available countries and suggest one of the top 10.
+
+### fetch
+
+Loads a URL as if browsing from a chosen location, and optionally returns the images, stylesheets, scripts, and media the page references. Requires `mcp:fetch`, because each new location opens an egress client billed to the network.
+
+State is threaded back through you. Every result includes a `next_step` saying exactly what to carry forward:
+
+- **`signed_proxy_id`** — the egress that served the request. Pass it back on follow-on loads to reuse the same location instead of opening a new client each time. Keep passing `location` too, so the egress can be re-established if it expired. Reuse guarantees the same **location**, not the same exit IP.
+- **`cookies`** — the site session, so logins and consent banners survive across calls. Opaque; pass it back unchanged and never edit it.
+- **`continuation`** — present when the page referenced more resources than fit in one call. Call again passing it to collect the rest; `url` is not needed then.
+- **`payment_required`** — present when the network is at its plan's concurrent client limit and payment can settle it. Sign the payment it describes and repeat the identical call with `payment` set to the signed payment. Do not start a separate purchase flow.
+
+Resource discovery is static: the HTML is parsed for references. Content a page loads with JavaScript is not seen.
+
+### Creating a proxy for direct use
+
+To get an HTTPS/SOCKS/WireGuard proxy you drive yourself, rather than fetching through the MCP server, use the API flow below.
 
 
 ## Using the API to create a HTTPS/SOCKS/WireGuard proxy for a country

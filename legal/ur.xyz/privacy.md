@@ -1,4 +1,4 @@
-# Products Privacy Policy
+# ur.xyz Privacy Policy
 
 Last modified: May 8, 2025
 
@@ -6,7 +6,7 @@ Last modified: May 8, 2025
 
 BringYour, Inc. (**"Company"** or **"We"**) respect your privacy and are committed to protecting it through our compliance with this policy.
 
-This policy describes the types of information we may collect from you or that you may provide when you visit the URnetwork website or use the URnetwork app (our "Products") and our practices for collecting, using, maintaining, protecting, and disclosing that information.
+This policy describes the types of information we may collect from you or that you may provide when you visit the ur.xyz website (our "Products") and our practices for collecting, using, maintaining, protecting, and disclosing that information.
 
 This policy applies to information we collect:
 
@@ -14,13 +14,12 @@ This policy applies to information we collect:
 
 -   In email, text, and other electronic messages between you and our Products.
 
--   Through mobile and desktop applications you download from Product, which provide dedicated non-browser-based interaction between you and this Product.
 
 Please read this policy carefully to understand our policies and practices regarding your information and how we will treat it. If you do not agree with our policies and practices, your choice is not to use our Products. By accessing or using this Product, you agree to this privacy policy. This policy may change from time to time (see Changes to Our Privacy Policy). Your continued use of this Product after we make changes is deemed to be acceptance of those changes, so please check the policy periodically for updates.
 
 ## Children Under the Age of 16
 
-Our Products are not intended for children under 16 years of age. No one under age 16 may provide any information to or on the Products. We do not knowingly collect personal information from children under 16. If you are under 16, do not use or provide any information on our Products or on or through any of its features. If we learn we have collected or received personal information from a child under 16 without verification of parental consent, we will delete that information. If you believe we might have any information from or about a child under 16, please contact us at: <notice@ur.io>.
+Our Products are not intended for children under 16 years of age. No one under age 16 may provide any information to or on the Products. We do not knowingly collect personal information from children under 16. If you are under 16, do not use or provide any information on our Products or on or through any of its features. If we learn we have collected or received personal information from a child under 16 without verification of parental consent, we will delete that information. If you believe we might have any information from or about a child under 16, please contact us at: <notice@ur.xyz>.
 
 California residents under 16 years of age may have additional rights regarding the collection and sale of their personal information. Please see Your California Privacy Rights for more information.
 
@@ -74,4 +73,4 @@ It is our policy to post any changes we make to our privacy policy on this page 
 
 ## Contact Information
 
-To ask questions or comment about this privacy policy and our privacy practices, contact us at <notice@ur.io>.
+To ask questions or comment about this privacy policy and our privacy practices, contact us at <notice@ur.xyz>.
